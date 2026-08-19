@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:03:03.099162",
+  "updated_at": "2026-08-19T10:03:10.276291",
   "plugins": [
     {
       "identifier": "analytics",
@@ -243,6 +243,34 @@
         "smtp",
         "imap",
         "notification"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": ""
+    },
+    {
+      "identifier": "enterprise_verify",
+      "name": "Enterprise Verification",
+      "description": "Enterprise Verification — OCR business license recognition + AI auto-audit",
+      "version": "1.3.1",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/enterprise_verify-v1.3.1/enterprise_verify-v1.3.1.zip",
+      "package_hash": "bf332f31c52ff580aa6db13d9fd8c94cf286ba26b269766e922b587576e2e2ce",
+      "file_size": 19966,
+      "category": "system",
+      "tags": [
+        "verification",
+        "enterprise",
+        "ocr",
+        "kyc",
+        "audit"
       ],
       "min_app_version": "0.10.0",
       "depends_on": {},
