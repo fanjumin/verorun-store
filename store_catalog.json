@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:04:58.143496",
+  "updated_at": "2026-08-19T10:05:03.541461",
   "plugins": [
     {
       "identifier": "analytics",
@@ -774,6 +774,33 @@
         "verification",
         "identity",
         "alipay"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": ""
+    },
+    {
+      "identifier": "visitor_profile",
+      "name": "Visitor Profile Engine",
+      "description": "AI-powered visitor behavior profiling engine with LLM Agent semantic extraction, pgvector storage, and dynamic persona injection",
+      "version": "1.3.1",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/visitor_profile-v1.3.1/visitor_profile-v1.3.1.zip",
+      "package_hash": "f760602fccfa737f7dda401f2e43f901b696ae2cf68d47b7bbedca0707f37fa9",
+      "file_size": 36692,
+      "category": "ai_agent",
+      "tags": [
+        "profile",
+        "AI",
+        "personalization",
+        "analytics"
       ],
       "min_app_version": "0.10.0",
       "depends_on": {},
