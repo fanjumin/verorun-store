@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:04:31.968027",
+  "updated_at": "2026-08-19T10:04:35.062707",
   "plugins": [
     {
       "identifier": "analytics",
@@ -633,6 +633,32 @@
         "subdomain",
         "nginx",
         "deploy"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": ""
+    },
+    {
+      "identifier": "sms",
+      "name": "SMS Service",
+      "description": "SMS Service — phone verification code sending with Aliyun/Twilio providers",
+      "version": "1.3.2",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/sms-v1.3.2/sms-v1.3.2.zip",
+      "package_hash": "0a76ac5f9954230f19c2c6f57888d98fc5d478e3fa4ed54b7a2e5972afb6dfd4",
+      "file_size": 26189,
+      "category": "system",
+      "tags": [
+        "sms",
+        "notification",
+        "verification"
       ],
       "min_app_version": "0.10.0",
       "depends_on": {},
