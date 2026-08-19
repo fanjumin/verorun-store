@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:04:08.392271",
+  "updated_at": "2026-08-19T10:04:10.104111",
   "plugins": [
     {
       "identifier": "analytics",
@@ -525,6 +525,32 @@
         "RAG",
         "collaboration",
         "search"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": ""
+    },
+    {
+      "identifier": "reviews",
+      "name": "Product Reviews",
+      "description": "商品评价系统 — 用户对已购商品打分、写评价、晒图",
+      "version": "1.4.1",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/reviews-v1.4.1/reviews-v1.4.1.zip",
+      "package_hash": "02aa0ee2370709b8ef9da2efeedb8fa331f520ba18636d1cf40b771091e2c705",
+      "file_size": 12588,
+      "category": "shop",
+      "tags": [
+        "review",
+        "rating",
+        "ecommerce"
       ],
       "min_app_version": "0.10.0",
       "depends_on": {},
