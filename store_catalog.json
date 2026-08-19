@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:03:31.932907",
+  "updated_at": "2026-08-19T10:03:37.652321",
   "plugins": [
     {
       "identifier": "analytics",
@@ -387,6 +387,33 @@
         "https://cdn.verorun.com/plugins/memory_engine/screenshot1.png"
       ],
       "readme_url": "https://cdn.verorun.com/plugins/memory_engine/README.md"
+    },
+    {
+      "identifier": "mini_app_builder",
+      "name": "Mini App Builder",
+      "description": "Mini-program generation & developer account management (merged with dev_accounts)",
+      "version": "2.3.3",
+      "author": "mini_app_builder",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/mini_app_builder-v2.3.3/mini_app_builder-v2.3.3.zip",
+      "package_hash": "dd622fa2a0aef0697d94ec1e46937d1e96a9360e382147b77aeba4f92b6b216e",
+      "file_size": 104049,
+      "category": "tools",
+      "tags": [
+        "mini-app",
+        "builder",
+        "taro",
+        "wechat"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": "https://cdn.verorun.com/plugins/mini_app_builder/README.md"
     }
   ]
 }
