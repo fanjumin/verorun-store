@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:04:23.995588",
+  "updated_at": "2026-08-19T10:04:31.968027",
   "plugins": [
     {
       "identifier": "analytics",
@@ -611,6 +611,33 @@
       "depends_on": {},
       "screenshots": [],
       "readme_url": "https://cdn.verorun.com/plugins/site_builder/README.md"
+    },
+    {
+      "identifier": "site_domains",
+      "name": "Site Domains",
+      "description": "Site Domains — Subdomain & Nginx configuration manager. Manage subdomain sites, bind service ports, and generate Nginx configs.",
+      "version": "1.3.2",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/site_domains-v1.3.2/site_domains-v1.3.2.zip",
+      "package_hash": "51177614df50aa0c62d221ba1eaa38c7162a88c51ba61858e31f4e9d02c3cdfb",
+      "file_size": 11662,
+      "category": "system",
+      "tags": [
+        "domain",
+        "subdomain",
+        "nginx",
+        "deploy"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": ""
     }
   ]
 }
