@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:03:27.887485",
+  "updated_at": "2026-08-19T10:03:31.932907",
   "plugins": [
     {
       "identifier": "analytics",
@@ -358,6 +358,35 @@
       "depends_on": {},
       "screenshots": [],
       "readme_url": ""
+    },
+    {
+      "identifier": "memory_engine",
+      "name": "CogEvolution",
+      "description": "Hierarchical agent memory with vector retrieval, Reflexion-based self-evolution and prompt metrics.",
+      "version": "1.2.1",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "https://cdn.verorun.com/plugins/memory_engine/icon.png",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/memory_engine-v1.2.1/memory_engine-v1.2.1.zip",
+      "package_hash": "b54f26b697527823c66f82280eb7a4430c3a4eedbf027485dea8202ae822e459",
+      "file_size": 34770,
+      "category": "system",
+      "tags": [
+        "memory",
+        "agent",
+        "ai",
+        "reflexion"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [
+        "https://cdn.verorun.com/plugins/memory_engine/screenshot1.png"
+      ],
+      "readme_url": "https://cdn.verorun.com/plugins/memory_engine/README.md"
     }
   ]
 }
