@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:03:37.652321",
+  "updated_at": "2026-08-19T10:03:46.411236",
   "plugins": [
     {
       "identifier": "analytics",
@@ -414,6 +414,39 @@
       "depends_on": {},
       "screenshots": [],
       "readme_url": "https://cdn.verorun.com/plugins/mini_app_builder/README.md"
+    },
+    {
+      "identifier": "oauth_config",
+      "name": "OAuth Login Config",
+      "description": "OAuth 第三方登录完整插件 — 登录/回调/配置管理。禁用后第三方登录功能完全消失。",
+      "version": "1.3.1",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/oauth_config-v1.3.1/oauth_config-v1.3.1.zip",
+      "package_hash": "47d1c32b264c5e892e3b49e3c05249dad95a00f9ae6605bcf11915a8b9eda1ab",
+      "file_size": 40376,
+      "category": "system",
+      "tags": [
+        "oauth",
+        "login",
+        "sso",
+        "douyin",
+        "wechat",
+        "alipay",
+        "google",
+        "github",
+        "facebook",
+        "telegram"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": ""
     }
   ]
 }
