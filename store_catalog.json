@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:04:38.807871",
+  "updated_at": "2026-08-19T10:04:44.105417",
   "plugins": [
     {
       "identifier": "analytics",
@@ -697,6 +697,34 @@
       "depends_on": {},
       "screenshots": [],
       "readme_url": "https://cdn.verorun.com/plugins/social_push/README.md"
+    },
+    {
+      "identifier": "subscription",
+      "name": "Subscription",
+      "description": "Unified Subscription Management — Pay-as-you-go feature marketplace with dual-environment payment routing (cn: Alipay/WeChat, intl: Stripe/PayPal)",
+      "version": "2.3.2",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "https://cdn.verorun.com/plugins/subscription/icon.png",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/subscription-v2.3.2/subscription-v2.3.2.zip",
+      "package_hash": "6701960cc188771e6906608c5a823af9b502935cbf96586f396b072fafa9b9e2",
+      "file_size": 143887,
+      "category": "system",
+      "tags": [
+        "subscription",
+        "payment",
+        "billing"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [
+        "screenshots/admin.png"
+      ],
+      "readme_url": "https://cdn.verorun.com/plugins/subscription/README.md"
     }
   ]
 }
