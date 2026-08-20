@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-20T08:55:01.500187",
+  "updated_at": "2026-08-20T08:55:04.740154",
   "plugins": [
     {
       "identifier": "analytics",
@@ -473,7 +473,7 @@
       "identifier": "payment",
       "name": "Payment Gateway",
       "description": "Payment Gateway — Alipay/WeChat/Stripe/PayPal configuration management (independent PG schema)",
-      "version": "1.3.1",
+      "version": "1.4.1",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -481,9 +481,9 @@
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/payment-v1.3.1/payment-v1.3.1.zip",
-      "package_hash": "7cb077ff146c40b0b8a7e9565248ea64042fe3be276710e7e07b4dd11aff7b15",
-      "file_size": 18794,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/payment-v1.4.1/payment-v1.4.1.zip",
+      "package_hash": "eea2c9dfb81a83dae7a761681c3ed13bf51ec53ba8f6c80e7ad6bbf713e19344",
+      "file_size": 18809,
       "category": "shop",
       "tags": [
         "payment",
