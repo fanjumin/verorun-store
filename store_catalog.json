@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-20T08:55:21.038757",
+  "updated_at": "2026-08-20T08:55:28.152545",
   "plugins": [
     {
       "identifier": "analytics",
@@ -639,7 +639,7 @@
       "identifier": "sms",
       "name": "SMS Service",
       "description": "SMS Service — phone verification code sending with Aliyun/Twilio providers",
-      "version": "1.3.2",
+      "version": "1.4.2",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -647,9 +647,9 @@
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/sms-v1.3.2/sms-v1.3.2.zip",
-      "package_hash": "0a76ac5f9954230f19c2c6f57888d98fc5d478e3fa4ed54b7a2e5972afb6dfd4",
-      "file_size": 26189,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/sms-v1.4.2/sms-v1.4.2.zip",
+      "package_hash": "f64183aabec6222dcfe07556ce9cd56d928a469e0b0b4afa7a92e27b4e960931",
+      "file_size": 26200,
       "category": "system",
       "tags": [
         "sms",
@@ -659,7 +659,7 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": ""
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/sms/README.md"
     },
     {
       "identifier": "social_push",
