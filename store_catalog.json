@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-20T08:54:28.959599",
+  "updated_at": "2026-08-20T08:54:32.922102",
   "plugins": [
     {
       "identifier": "analytics",
@@ -388,7 +388,7 @@
       "identifier": "mini_app_builder",
       "name": "Mini App Builder",
       "description": "Mini-program generation & developer account management (merged with dev_accounts)",
-      "version": "2.3.3",
+      "version": "2.5.0",
       "author": "mini_app_builder",
       "author_url": "",
       "icon_url": "",
@@ -396,9 +396,9 @@
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/mini_app_builder-v2.3.3/mini_app_builder-v2.3.3.zip",
-      "package_hash": "dd622fa2a0aef0697d94ec1e46937d1e96a9360e382147b77aeba4f92b6b216e",
-      "file_size": 104049,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/mini_app_builder-v2.5.0/mini_app_builder-v2.5.0.zip",
+      "package_hash": "647ee2815263cf922ad5506ad267d18501b066f590d716eec63822e40787ba22",
+      "file_size": 124121,
       "category": "tools",
       "tags": [
         "mini-app",
@@ -409,7 +409,7 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "https://cdn.verorun.com/plugins/mini_app_builder/README.md"
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/mini_app_builder/README.md"
     },
     {
       "identifier": "oauth_config",
