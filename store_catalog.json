@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-20T08:55:37.121601",
+  "updated_at": "2026-08-20T08:55:42.551091",
   "plugins": [
     {
       "identifier": "analytics",
@@ -754,7 +754,7 @@
       "identifier": "verification",
       "name": "Identity Verification",
       "description": "Identity Verification — real-name verification via Alipay identity service",
-      "version": "1.3.1",
+      "version": "1.4.1",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -762,9 +762,9 @@
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/verification-v1.3.1/verification-v1.3.1.zip",
-      "package_hash": "2a449565ee4c1e4c10c6f67754a7b71589a953e7a8b4e0f817b78338bc55ca59",
-      "file_size": 15092,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/verification-v1.4.1/verification-v1.4.1.zip",
+      "package_hash": "e722639967f6b879231196ba7afed1f4040360edd2125390ac82f0bc1582b03e",
+      "file_size": 15109,
       "category": "system",
       "tags": [
         "verification",
@@ -774,7 +774,7 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": ""
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/verification/README.md"
     },
     {
       "identifier": "visitor_profile",
