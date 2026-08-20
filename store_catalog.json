@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-20T08:54:02.219746",
+  "updated_at": "2026-08-20T08:54:19.604751",
   "plugins": [
     {
       "identifier": "analytics",
@@ -305,7 +305,7 @@
       "identifier": "im_gateway",
       "name": "IM Gateway",
       "description": "IM Gateway — Unified instant-messaging channel gateway (Feishu / WeCom / QQ / DingTalk), extensible to Telegram / LINE",
-      "version": "1.4.1",
+      "version": "1.5.1",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -313,9 +313,9 @@
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/im_gateway-v1.4.1/im_gateway-v1.4.1.zip",
-      "package_hash": "cff1ef44769221e48dbaba955c143cd98fdcbc92787a9caba37da60a34b00494",
-      "file_size": 25722,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/im_gateway-v1.5.1/im_gateway-v1.5.1.zip",
+      "package_hash": "5127c5f50487fb7e189212701669ba4c9fb74460c4f11b2c47d8745096987fcd",
+      "file_size": 25737,
       "category": "system",
       "tags": [
         "im",
