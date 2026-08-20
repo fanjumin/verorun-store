@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-19T10:05:11.755670",
+  "updated_at": "2026-08-20T08:52:01.250036",
   "plugins": [
     {
       "identifier": "analytics",
@@ -35,17 +35,17 @@
       "identifier": "ads",
       "name": "Ad Management",
       "description": "Ad Management — Ad placements, zones, impressions/clicks stats, and AI-ready APIs",
-      "version": "1.4.1",
+      "version": "1.5.1",
       "author": "VeroRun",
       "author_url": "",
-      "icon_url": "",
+      "icon_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/ads/icon.png",
       "price_type": "free",
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/ads-v1.4.1/ads-v1.4.1.zip",
-      "package_hash": "ed46c21067cebc9df92aa5628fc4dd3e050906a81ba60c40374aa9c8c556e9e9",
-      "file_size": 35419,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/ads-v1.5.1/ads-v1.5.1.zip",
+      "package_hash": "332b7b43377202e1bf6d7407585efc880519d009b025021873be945e5d776af2",
+      "file_size": 52080,
       "category": "content",
       "tags": [
         "advertising",
