@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-20T08:55:42.551091",
+  "updated_at": "2026-08-20T08:55:45.482633",
   "plugins": [
     {
       "identifier": "analytics",
@@ -807,7 +807,7 @@
       "identifier": "wishlist",
       "name": "Wishlist",
       "description": "收藏/心愿单 — 用户收藏商品、管理心愿清单",
-      "version": "1.4.2",
+      "version": "1.5.2",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -815,9 +815,9 @@
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/wishlist-v1.4.2/wishlist-v1.4.2.zip",
-      "package_hash": "27ad4a2fad1578b6a8330ca84352146d0218be3405f4b791d74e59045227c66c",
-      "file_size": 10851,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/wishlist-v1.5.2/wishlist-v1.5.2.zip",
+      "package_hash": "1f31a801227d6b3a3fa6cc329c5abdf01cb48bb059ef302ede4bb3a05ae893e2",
+      "file_size": 14871,
       "category": "shop",
       "tags": [
         "wishlist",
@@ -827,7 +827,7 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "https://cdn.verorun.com/plugins/wishlist/README.en.md"
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/wishlist/README.md"
     }
   ]
 }
