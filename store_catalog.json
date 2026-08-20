@@ -1,22 +1,22 @@
 {
   "version": "1.0",
-  "updated_at": "2026-08-20T08:52:05.769947",
+  "updated_at": "2026-08-20T08:52:13.221194",
   "plugins": [
     {
       "identifier": "analytics",
       "name": "Analytics",
       "description": "Analytics Middleware & Dashboard — Server-side Cookieless Analytics",
-      "version": "1.8.1",
+      "version": "1.9.1",
       "author": "VeroRun",
       "author_url": "",
-      "icon_url": "https://cdn.verorun.com/plugins/analytics/icon.png",
+      "icon_url": "",
       "price_type": "free",
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/analytics-v1.8.1/analytics-v1.8.1.zip",
-      "package_hash": "12f9d0cb0b119f0813ba0d05c17b9c51ea033e06326b79d2e85f194ddfbfdccd",
-      "file_size": 10017532,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/analytics-v1.9.1/analytics-v1.9.1.zip",
+      "package_hash": "cacf6bdaf17dcc0aa24f976b1791b41ad61bd9dcd9c91ad4aaf3f223d8107304",
+      "file_size": 10022415,
       "category": "system",
       "tags": [
         "analytics",
@@ -26,10 +26,8 @@
       ],
       "min_app_version": "0.10.0",
       "depends_on": {},
-      "screenshots": [
-        "https://cdn.verorun.com/plugins/analytics/screenshot1.png"
-      ],
-      "readme_url": "https://cdn.verorun.com/plugins/analytics/README.md"
+      "screenshots": [],
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/analytics/README.md"
     },
     {
       "identifier": "ads",
