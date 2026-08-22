@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updated_at": "2026-08-22T08:22:06.982328",
+  "updated_at": "2026-08-22T08:22:09.907261",
   "plugins": [
     {
       "identifier": "analytics",
@@ -113,7 +113,7 @@
       "identifier": "chatbot",
       "name": "AI Advisor",
       "description": "AI Advisor — 全站 AI 顾问客服。使用独立数据库（chatbot schema）存储配置、会话与 Agent 注册，并跨读主库知识库与工单。 / Site-wide AI advisor chatbot. Uses independent database (chatbot schema) for configs, sessions, and agent registry. Cross-reads main DB for knowledge base and user tickets.",
-      "version": "1.5.1",
+      "version": "1.5.2",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -121,9 +121,9 @@
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/chatbot-v1.5.1/chatbot-v1.5.1.zip",
-      "package_hash": "ed0e4efd63f03ed4328e662df374e8a2e72e785f68d046a8ae7be5abbcf4c2ff",
-      "file_size": 37851,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/chatbot-v1.5.2/chatbot-v1.5.2.zip",
+      "package_hash": "4464fa65455aa52871631036ede145f9c86226c4c37492fbb532af52b5f7fba5",
+      "file_size": 37858,
       "category": "ai_agent",
       "tags": [
         "chatbot",
