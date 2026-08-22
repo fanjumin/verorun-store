@@ -15,9 +15,7 @@ AI Site Builder is an LLM-driven website builder: prompt templates, site tasks, 
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `db_url_env` | `SITE_BUILDER_DB_URL` | Env var for the plugin database URL |
-| `database_name` | `site_builder` | Database name |
-| `schema` | `site_builder` | Dedicated PostgreSQL schema |
+| `schema` | `site_builder` | Dedicated PostgreSQL schema in the main DB |
 | `internal_base_url_env` | `MAIN_SITE_INTERNAL_URL` | Internal main-site base URL |
 | `internal_token_env` | `INTERNAL_SERVICE_TOKEN` | Internal service auth token env var |
 
