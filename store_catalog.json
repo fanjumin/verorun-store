@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updated_at": "2026-08-22T08:22:23.537548",
+  "updated_at": "2026-08-22T08:22:26.182936",
   "plugins": [
     {
       "identifier": "analytics",
@@ -279,7 +279,7 @@
       "identifier": "health_check",
       "name": "Health Check",
       "description": "System Health Check — Automated health monitoring + alerting + trend analysis",
-      "version": "1.9.1",
+      "version": "1.9.2",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -287,9 +287,9 @@
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/health_check-v1.9.1/health_check-v1.9.1.zip",
-      "package_hash": "e5cfaec8b98c1ffbe941df8b9832d27627b7b38a01c09947aaa48cfea03c4f66",
-      "file_size": 93436,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/health_check-v1.9.2/health_check-v1.9.2.zip",
+      "package_hash": "5ed3a68e1ef0b425ab82f60aa90d5882fa733e1f96c1ca08d7d106956691de8a",
+      "file_size": 93448,
       "category": "system",
       "tags": [
         "health",
