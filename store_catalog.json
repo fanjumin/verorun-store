@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updated_at": "2026-08-22T08:22:39.791303",
+  "updated_at": "2026-08-22T08:22:42.626987",
   "plugins": [
     {
       "identifier": "analytics",
@@ -415,7 +415,7 @@
       "identifier": "oauth_config",
       "name": "OAuth Login Config",
       "description": "OAuth 第三方登录完整插件 — 登录/回调/配置管理。禁用后第三方登录功能完全消失。",
-      "version": "1.4.1",
+      "version": "1.4.2",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -423,9 +423,9 @@
       "price_amount": 0,
       "price_interval": "onetime",
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/oauth_config-v1.4.1/oauth_config-v1.4.1.zip",
-      "package_hash": "62065bfd4b2e8128bf8fc5d7c073077f6be3517a92525c8f16e276e2da9638d4",
-      "file_size": 40381,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/oauth_config-v1.4.2/oauth_config-v1.4.2.zip",
+      "package_hash": "cd09ce74702c40a9e5264f59ac71bf16e2d6581d6bfd01ceba41f02c9388fcd1",
+      "file_size": 40392,
       "category": "system",
       "tags": [
         "oauth",
