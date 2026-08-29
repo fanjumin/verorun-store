@@ -1,6 +1,6 @@
 {
   "version": "0.2.0",
-  "updated_at": "2026-08-27T12:29:18.519587",
+  "updated_at": "2026-08-29T01:47:53.262824",
   "plugins": [
     {
       "identifier": "analytics",
@@ -972,6 +972,40 @@
       "depends_on": {},
       "screenshots": [],
       "readme_url": ""
+    },
+    {
+      "identifier": "risk_control",
+      "name": "Risk Control",
+      "description": "统一风控决策引擎 — 账户/资金/AI 资源/插件供应链/内容合规/商城六域风险防控",
+      "version": "1.0.0",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "price_quarter_fen": 0,
+      "price_year_fen": 0,
+      "compatible_editions": [
+        "standard",
+        "pro",
+        "edu",
+        "minipro"
+      ],
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/risk_control-v1.0.0/risk_control-v1.0.0.zip",
+      "package_hash": "f40e41025a92c5c5204d5b87388632829f50c88e73884e244c94bdecd3731f20",
+      "file_size": 58088,
+      "category": "system",
+      "tags": [
+        "风控",
+        "反欺诈",
+        "安全"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/risk_control/README.md"
     }
   ]
 }
