@@ -1,8 +1,8 @@
-# VeroScholar — 科研工作台
+# VeroScholar — 引源索骥
 
 VeroScholar 是 VeroRun AI 系统教育版的科研全流程插件，覆盖**选题 · 文献 · 写作 · 审稿**四个核心阶段。
 
-插件严格遵循 [`docs/plugin-standard-v1.5.md`](../../docs/plugin-standard-v1.5.md) 开发：
+插件严格遵循 [`docs/plugin-standard-v1.7.md`](../../docs/plugin-standard-v1.7.md) 开发：
 单库多 Schema（`veroscholar`）、共享连接池、JWT 管理员鉴权、iframe 独立页、
 i18n 双语文案、卸载零残留。
 
@@ -10,11 +10,19 @@ i18n 双语文案、卸载零残留。
 
 | 模块 | 说明 |
 |------|------|
-| 多源文献检索 | arXiv / Semantic Scholar / OpenAlex 三库聚合，DOI 去重，`semantic` 与 `semantic_scholar` 别名 |
+| 多源文献检索 | arXiv / Semantic Scholar / OpenAlex 三库聚合，DOI 去重，`semantic` 与 `semantic_scholar` 别名；支持年份/被引/期刊后置过滤 |
 | 论文知识库 | 论文入库、搜索、详情；无 DOI 时按 title+year 兜底去重 |
 | 研究项目 | 项目 CRUD、成员管理、论文归类 |
 | 阅读笔记 | 论文级笔记标注，可选 embedding 向量（pgvector）供语义检索 |
-| 综述生成器 | 触发 DAG 工作流：关键词扩展 → 多源检索 → 去重排序 → 方法分类 → LLM 生成综述 |
+| 综述生成器 | 触发 DAG 工作流：关键词扩展 → 多源检索 → 确定性去重排序 → 方法分类 → LLM 生成综述 |
+| 引用校验 | 综述引用权威注册机构在线验真（Crossref/DataCite）+ 撤稿检测，五态判定（registered/retracted/concern/unregistered/offline），本地库补充标记 |
+| 引文导出 | 单篇论文导出 BibTeX / RIS（预印本自动识别为 `@misc`/`TY - RPRT`），供写作引用管理 |
+| 论文问答 | 基于论文摘要 + 阅读笔记的 RAG 问答（仅基于给定材料，防幻觉） |
+| 摘要翻译 | 论文摘要中英互译（LLM） |
+| 相关论文推荐 | 摘要向量余弦相似度推荐相似论文 |
+| 标签系统 | 论文级标签（幂等增删）+ 库按标签筛选 |
+| 阅读状态 | unread / reading / read 三态，库卡片徽标 + 抽屉切换 |
+| 全文检索 | pg_trgm GIN 索引加速 title/abstract 检索（中文友好，无分词器依赖） |
 | 3 个子 Agent | Literature Review（high tier）、Experiment Designer（high tier）、Paper Writer（standard tier） |
 
 ## 目录结构
@@ -25,8 +33,11 @@ plugins/veroscholar/
 ├── models.py                    # 数据层（共享连接池 + search_path 隔离）
 ├── routes.py                    # Blueprint：3 个页面 + RESTful API + JWT 鉴权
 ├── workflow.py                  # DAG 节点处理器 + 综述工作流触发
+├── services/                    # AI 服务层（问答 / 翻译 / 相关推荐）
 ├── plugin.json                  # 插件元数据（agents/menu/dashboard/settings）
 ├── migrations/v1.0.0_init.sql   # schema 建表（全部 IF NOT EXISTS 幂等）
+├── migrations/v1.1.1_lib.sql    # pg_trgm 索引 + 标签表 + 阅读状态
+├── migrations/v1.2.0_verify.sql # DOI 校验缓存 + 检索策略落库
 ├── adapters/                    # 数据源适配器（base + arxiv + semantic_scholar + openalex）
 ├── agents/                      # 3 个子 Agent 提示词
 ├── workflows/literature_review.json  # 综述 DAG 蓝图
@@ -34,7 +45,7 @@ plugins/veroscholar/
 ├── static/js/veroscholar.js     # 前端逻辑（VS 命名空间）
 ├── static/css/veroscholar.css   # design-system 变量风格
 ├── i18n/en.yml + zh-CN.yml      # 英文键双语映射
-└── tests/                       # 单元 + 集成测试（33 用例）
+└── tests/                       # 单元测试（80+ 用例）
 ```
 
 ## 安装与启用
@@ -64,11 +75,12 @@ plugins/veroscholar/
 cd F:\Sites\VeroRun
 python -m unittest plugins.veroscholar.tests.test_adapters \
                        plugins.veroscholar.tests.test_models \
-                       plugins.veroscholar.tests.test_routes -v
+                       plugins.veroscholar.tests.test_routes \
+                       plugins.veroscholar.tests.test_services \
+                       plugins.veroscholar.tests.test_workflow -v
 ```
 
-33 个用例覆盖：适配器字段映射 / 摘要重建 / 错误传播、数据层 SQL 构造、
-路由鉴权（401/302/静态豁免）、页面与 API 端点。
+80+ 用例覆盖：适配器字段映射 / 摘要重建 / 错误传播、数据层 SQL 构造、路由鉴权（401/302/静态豁免）、页面与 API 端点、引用校验权威验真五态、综述去重节点、检索过滤、预印本导出、论文问答与翻译、标签系统与阅读状态。
 
 ## 依赖
 
