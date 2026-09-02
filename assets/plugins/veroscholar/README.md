@@ -10,7 +10,7 @@ i18n 双语文案、卸载零残留。
 
 | 模块 | 说明 |
 |------|------|
-| 多源文献检索 | arXiv / Semantic Scholar / OpenAlex 三库聚合，DOI 去重，`semantic` 与 `semantic_scholar` 别名；支持年份/被引/期刊后置过滤 |
+| 多源文献检索 | arXiv / Semantic Scholar / OpenAlex / 中文作品（OpenAlex `language:zh`）多库聚合，DOI 去重（title+year 兜底），`semantic` 与 `semantic_scholar` 别名；支持年份/被引/期刊后置过滤 |
 | 论文知识库 | 论文入库、搜索、详情；无 DOI 时按 title+year 兜底去重 |
 | 研究项目 | 项目 CRUD、成员管理、论文归类 |
 | 阅读笔记 | 论文级笔记标注，可选 embedding 向量（pgvector）供语义检索 |
@@ -23,6 +23,7 @@ i18n 双语文案、卸载零残留。
 | 标签系统 | 论文级标签（幂等增删）+ 库按标签筛选 |
 | 阅读状态 | unread / reading / read 三态，库卡片徽标 + 抽屉切换 |
 | 全文检索 | pg_trgm GIN 索引加速 title/abstract 检索（中文友好，无分词器依赖） |
+| PDF 全文（B1） | PDF 上传（≤10MB，sha256 幂等）→ pypdf 解析 → 段落分块入库 → 分块浏览；论文问答自动注入 top-3 相关全文摘录（钩子注入，失败静默降级） |
 | 3 个子 Agent | Literature Review（high tier）、Experiment Designer（high tier）、Paper Writer（standard tier） |
 
 ## 目录结构
@@ -38,14 +39,16 @@ plugins/veroscholar/
 ├── migrations/v1.0.0_init.sql   # schema 建表（全部 IF NOT EXISTS 幂等）
 ├── migrations/v1.1.1_lib.sql    # pg_trgm 索引 + 标签表 + 阅读状态
 ├── migrations/v1.2.0_verify.sql # DOI 校验缓存 + 检索策略落库
-├── adapters/                    # 数据源适配器（base + arxiv + semantic_scholar + openalex）
+├── migrations/v1.3.0_fulltext.sql # PDF 全文表（B1，零扩展依赖）
+├── fulltext/                    # PDF 全文模块（parser / chunker / qa_ext / routes）
+├── adapters/                    # 数据源适配器（base + arxiv + semantic_scholar + openalex + openalex_zh）
 ├── agents/                      # 3 个子 Agent 提示词
 ├── workflows/literature_review.json  # 综述 DAG 蓝图
 ├── templates/                   # dashboard / search / review 三页
 ├── static/js/veroscholar.js     # 前端逻辑（VS 命名空间）
 ├── static/css/veroscholar.css   # design-system 变量风格
 ├── i18n/en.yml + zh-CN.yml      # 英文键双语映射
-└── tests/                       # 单元测试（80+ 用例）
+└── tests/                       # 单元测试（105 用例）
 ```
 
 ## 安装与启用
@@ -68,6 +71,7 @@ plugins/veroscholar/
 | `arxiv_enabled` | true | arXiv 数据源开关 |
 | `semantic_enabled` | true | Semantic Scholar 数据源开关 |
 | `openalex_enabled` | true | OpenAlex 数据源开关 |
+| `zh_enabled` | true | 中文文献源开关（OpenAlex 中文作品） |
 
 ## 测试
 
@@ -77,12 +81,14 @@ python -m unittest plugins.veroscholar.tests.test_adapters \
                        plugins.veroscholar.tests.test_models \
                        plugins.veroscholar.tests.test_routes \
                        plugins.veroscholar.tests.test_services \
-                       plugins.veroscholar.tests.test_workflow -v
+                       plugins.veroscholar.tests.test_workflow \
+                       plugins.veroscholar.tests.test_zh_adapter \
+                       plugins.veroscholar.tests.test_fulltext -v
 ```
 
-80+ 用例覆盖：适配器字段映射 / 摘要重建 / 错误传播、数据层 SQL 构造、路由鉴权（401/302/静态豁免）、页面与 API 端点、引用校验权威验真五态、综述去重节点、检索过滤、预印本导出、论文问答与翻译、标签系统与阅读状态。
+116 用例覆盖：适配器字段映射 / 摘要重建 / 错误传播、中文源 language:zh 过滤与无 DOI 保留、数据层 SQL 构造、路由鉴权（401/302/静态豁免）、页面与 API 端点、引用校验权威验真五态、综述去重节点、检索过滤、预印本导出、论文问答与翻译、标签系统与阅读状态、全文分块与问答注入降级、综述回写 reviews 表、全文删除路由（成功/论文不存在/非法 file_id）、多源检索 per_source 配额。
 
 ## 依赖
 
-- 运行时：`feedparser`（Python 依赖）、PostgreSQL + `pgvector`（可选，embedding 列）
+- 运行时：`feedparser` + `pypdf`（Python 依赖）、PostgreSQL + `pgvector`（可选，embedding 列）
 - 环境：插件标准 v1.5+，`min_app_version: 0.58.0`
