@@ -155,7 +155,7 @@ plugins/cogevolution_substrate/
 ├── bindings/
 │   ├── __init__.py
 │   ├── agent_domain.py             # Maps agent task results → curation records
-│   └── sim_telemetry.py            # (legacy stub, not active)
+│   └── sim_telemetry.py            # IIoT ingest binding (gated by enable_iiot_ingest)
 ├── services/
 │   ├── curation_store.py           # Dedup/embedding/limit-aware persistence
 │   ├── extractor.py                # PII + budget + opt-in extraction boundary
@@ -370,8 +370,13 @@ activates for users who explicitly chose it, so coexistence is harmless.
   `model` strategy is reserved.
 - **`embedding` is best-effort:** when pgvector is unavailable, vector search silently
   degrades to keyword matching.
-- **Legacy stubs:** `events.py`, `bindings/sim_telemetry.py`, `services/training.py` are
-  non-active and kept for reference.
+- **Legacy stubs:** `events.py`, `services/training.py` are non-active and kept for reference.
+- **IIoT ingest:** `bindings/sim_telemetry.py` implements the IIoT telemetry channel and is
+  active behind `enable_iiot_ingest` (default off).
+- **Push curation:** external plugins may emit `cogevolution.curation.submit` (a `curation`
+  dict) to feed the extractor pipeline. The `cogevolution.owner_allowed` filter hook
+  arbitrates admission for non-`global`/`device`/`user` owner types; when no plugin
+  arbitrates, extraction fails closed.
 
 ---
 
