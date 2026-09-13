@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-09-13T06:01:10.028856",
+  "updated_at": "2026-09-13T06:01:13.638520",
   "plugins": [
     {
       "identifier": "analytics",
@@ -883,17 +883,20 @@
       "identifier": "vault",
       "name": "Vault",
       "description": "Data vault — full/incremental backup, AES-256-GCM encryption, scheduled backups, audit logging, multi-target storage",
-      "version": "2.5.2",
+      "version": "2.6.4",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
       "price_type": "free",
       "price_amount": 0,
       "price_interval": "onetime",
+      "price_quarter_fen": 0,
+      "price_year_fen": 0,
+      "compatible_editions": [],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/vault-v2.5.2/vault-v2.5.2.zip",
-      "package_hash": "cd472c0b2d3c8e9d9d7d9f63c9d856d2e39222054f8795aabf1cb1ab8864546a",
-      "file_size": 98928,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/vault-v2.6.4/vault-v2.6.4.zip",
+      "package_hash": "176858553f12f0927f0f68d42b5e1a0c8fd53b388d437c2cd3266b3cdb92c25b",
+      "file_size": 99276,
       "category": "system",
       "tags": [
         "backup",
@@ -905,7 +908,10 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/vault/README.md"
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/vault/README.md",
+      "is_official": true,
+      "developer_id": 0,
+      "developer_org": ""
     },
     {
       "identifier": "verification",
