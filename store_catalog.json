@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-09-13T06:00:36.411078",
+  "updated_at": "2026-09-13T06:00:39.494108",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1196,7 +1196,7 @@
       "compatible_editions": [],
       "trial_days": 0,
       "download_url": "https://github.com/fanjumin/verorun-store/releases/download/ros_bridge-v1.0.0/ros_bridge-v1.0.0.zip",
-      "package_hash": "9505d21f4942e9c89af88b5e96c8dddc05b5309570a2be1ce4ec2f5073c7747c",
+      "package_hash": "4d451e014b57813746d6177e4110904ffaf5f7bac4d2deac5eee4e6ee71f2183",
       "file_size": 52246,
       "category": "tools",
       "tags": [
