@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-09-13T06:00:57.345952",
+  "updated_at": "2026-09-13T06:01:01.094676",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1051,7 +1051,7 @@
       "identifier": "stock_analysis",
       "name": "Stock Analysis",
       "description": "A-share multi-dimensional stock analysis with technical, fundamental, sentiment and AI-assisted research.",
-      "version": "1.2.0",
+      "version": "2.0.1",
       "author": "easykai",
       "author_url": "",
       "icon_url": "",
@@ -1062,9 +1062,9 @@
       "price_year_fen": 0,
       "compatible_editions": [],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/stock_analysis-v1.2.0/stock_analysis-v1.2.0.zip",
-      "package_hash": "d903e6eda251a6a1709ceaaad9fb6eafe585e292030378561f1c523b607760fe",
-      "file_size": 23847,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/stock_analysis-v2.0.1/stock_analysis-v2.0.1.zip",
+      "package_hash": "f2fcea6689e4f64621aee6190a404550d563a86bda1aa545d81d21d5347625af",
+      "file_size": 260116,
       "category": "ai_agent",
       "tags": [
         "finance",
@@ -1073,10 +1073,13 @@
         "technical-analysis",
         "fundamental-analysis"
       ],
-      "min_app_version": "0.59.3",
+      "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/stock_analysis/README.md"
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/stock_analysis/README.md",
+      "is_official": true,
+      "developer_id": 0,
+      "developer_org": ""
     },
     {
       "identifier": "cogevolution_substrate",
