@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-09-13T05:59:56.091174",
+  "updated_at": "2026-09-13T05:59:58.338814",
   "plugins": [
     {
       "identifier": "analytics",
@@ -306,17 +306,20 @@
       "identifier": "enterprise_verify",
       "name": "Enterprise Verification",
       "description": "Enterprise Verification — OCR business license recognition + AI auto-audit",
-      "version": "1.4.2",
+      "version": "1.5.3",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
       "price_type": "free",
       "price_amount": 0,
       "price_interval": "onetime",
+      "price_quarter_fen": 0,
+      "price_year_fen": 0,
+      "compatible_editions": [],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/enterprise_verify-v1.4.2/enterprise_verify-v1.4.2.zip",
-      "package_hash": "046f92153a6054c3e56887d59523f9e89abc9e77bb599f9363319a7580491cd5",
-      "file_size": 19992,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/enterprise_verify-v1.5.3/enterprise_verify-v1.5.3.zip",
+      "package_hash": "b94cd206097545c00d09157ec5817a5f68e2b208916890a52b7ffed4806acd63",
+      "file_size": 21863,
       "category": "system",
       "tags": [
         "verification",
@@ -328,7 +331,10 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": ""
+      "readme_url": "",
+      "is_official": true,
+      "developer_id": 0,
+      "developer_org": ""
     },
     {
       "identifier": "health_check",
