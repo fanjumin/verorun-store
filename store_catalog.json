@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-09-13T05:59:43.903384",
+  "updated_at": "2026-09-13T05:59:46.982575",
   "plugins": [
     {
       "identifier": "analytics",
@@ -959,7 +959,7 @@
       "identifier": "cogevolution_substrate",
       "name": "Evolution Core",
       "description": "Industrial data-flywheel evolution substrate: memory curation, reflexion and controlled improvement for AI agents.",
-      "version": "1.0.1",
+      "version": "1.2.0",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -970,9 +970,9 @@
       "price_year_fen": 0,
       "compatible_editions": [],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/cogevolution_substrate-v1.0.1/cogevolution_substrate-v1.0.1.zip",
-      "package_hash": "4b2cab01609ef2beb8395235eed0c4295da2eaab117520602372c742799bafaa",
-      "file_size": 36034,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/cogevolution_substrate-v1.2.0/cogevolution_substrate-v1.2.0.zip",
+      "package_hash": "955a2988c99d5148ac767358e3a4fc896639d16aeb4e716acfec56a9f9df0f03",
+      "file_size": 39017,
       "category": "ai_agent",
       "tags": [
         "ml",
@@ -980,10 +980,13 @@
         "industrial",
         "self-evolution"
       ],
-      "min_app_version": "0.59.3",
+      "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/cogevolution_substrate/README.md"
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/cogevolution_substrate/README.md",
+      "is_official": true,
+      "developer_id": 0,
+      "developer_org": ""
     },
     {
       "identifier": "two_factor_auth",
