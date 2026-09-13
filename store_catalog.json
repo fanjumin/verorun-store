@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-09-13T05:59:26.301684",
+  "updated_at": "2026-09-13T05:59:30.554419",
   "plugins": [
     {
       "identifier": "analytics",
@@ -67,17 +67,20 @@
       "identifier": "ali_api",
       "name": "1688 Supply Chain",
       "description": "1688 供应链采集插件 — 商品搜索、AI 优化、本地商城发布",
-      "version": "2.4.3",
+      "version": "2.5.5",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
       "price_type": "free",
       "price_amount": 0,
       "price_interval": "onetime",
+      "price_quarter_fen": 0,
+      "price_year_fen": 0,
+      "compatible_editions": [],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/ali_api-v2.4.3/ali_api-v2.4.3.zip",
-      "package_hash": "ad8578136ca594a53ea63965731cc58d6fa965b7fcaa675bb70c0d15db1828a3",
-      "file_size": 131088,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/ali_api-v2.5.5/ali_api-v2.5.5.zip",
+      "package_hash": "a9385d7dc55ee20628542c7196bcf58fa0acc2e57cdce3d9fe613c386678d5cd",
+      "file_size": 135285,
       "category": "supply_chain",
       "tags": [
         "supply-chain",
@@ -87,7 +90,10 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/ali_api/README.md"
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/ali_api/README.md",
+      "is_official": true,
+      "developer_id": 0,
+      "developer_org": ""
     },
     {
       "identifier": "captcha_embedded",
