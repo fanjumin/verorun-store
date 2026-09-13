@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-09-13T06:00:39.494108",
+  "updated_at": "2026-09-13T06:00:43.083927",
   "plugins": [
     {
       "identifier": "analytics",
@@ -678,17 +678,20 @@
       "identifier": "shop",
       "name": "Shop",
       "description": "Shop/Mall — Product management, categories, orders, cart, checkout",
-      "version": "1.6.2",
+      "version": "2.2.1",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
       "price_type": "free",
       "price_amount": 0,
       "price_interval": "onetime",
+      "price_quarter_fen": 0,
+      "price_year_fen": 0,
+      "compatible_editions": [],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/shop-v1.6.2/shop-v1.6.2.zip",
-      "package_hash": "2a221a5917e52acfc4ea2336a0e1a112b6feab5c3825d7fa54f5144ec93d07cd",
-      "file_size": 127813,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/shop-v2.2.1/shop-v2.2.1.zip",
+      "package_hash": "24c4298c799afaedaf327157b1dae476e4b5d32aa77bd7c2d8e7380822736905",
+      "file_size": 156948,
       "category": "shop",
       "tags": [
         "shop",
@@ -700,7 +703,10 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/shop/README.md"
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/shop/README.md",
+      "is_official": true,
+      "developer_id": 0,
+      "developer_org": ""
     },
     {
       "identifier": "site_builder",
