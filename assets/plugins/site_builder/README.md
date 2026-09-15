@@ -146,7 +146,7 @@ The public router `render_page` renders through `_render_themed()` (registry + h
 
 ## Admin console & editor
 
-`templates/admin_site_builder.html` (inline partial, entry under System → AI Site Builder, `/admin/site-builder/prompts`) hosts four areas: AI generation flow, style-preset picker, page-tree management, and the site-settings editor.
+`templates/admin_site_builder.html` (inline partial, entry under System → AI Site Builder, `/admin/site-builder/prompts`) hosts five areas: AI generation flow, style-preset picker, page-tree management, the site-settings editor, and the website style analyzer.
 
 `templates/ai_site_preview.html` + `static/` (served by `/admin/site-builder/preview-static/*`) is a desktop H5 **Preview-as-Editor** (mobile mini-program frame removed since v2.5.0):
 
@@ -203,11 +203,21 @@ Migration is executed on install/enable/setup with a transaction-level advisory 
 |-----------|--------|---------|
 | `site_builder_bp` | `/admin/site-builder` | prompts CRUD, capabilities, style presets, preview/execute/publish, draft-data, preview-site, modify, tasks, page-summary, draft editor API, versions, page tree, static assets |
 | `site_settings_bp` | `/admin/site-settings` | tokens GET/PUT, schema, CSS/render output, brand/navigation/footer/colors/typography sub-editors |
+| `site_analyzer_bp` | `/admin/site-analyzer` | style analyzer: `targets` / `analyze` (own_site/paste) / `analyses` (+detail) / `apply` |
 | `shop_bp` | `/shop` | plugin & skill store pages |
 | `site_public_bp` | `/page` | published page rendering gateway |
 | `site_public_site_bp` | `/site` | sitemap.xml, robots.txt |
 
-Dashboard stats: `total_tasks`, `completed_tasks`, `total_prompts` (read from the plugin schema, idempotent).
+Style analyzer API (`/admin/site-analyzer/*`):
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/admin/site-analyzer/targets` | list analyzable pages of this site |
+| POST | `/admin/site-analyzer/analyze` | run analysis (`own_site` / `paste`), returns tokens + diff + confidence + warnings |
+| GET | `/admin/site-analyzer/analyses` | analysis history (paged); `/analyses/<analysis_id>` for one record |
+| POST | `/admin/site-analyzer/apply` | apply a given analysis result to the **draft** tokens |
+
+Dashboard stats: `total_tasks`, `completed_tasks`, `total_prompts`, `total_analyses` (read from the plugin schema, idempotent).
 
 ## Getting started
 
