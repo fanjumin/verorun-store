@@ -1,6 +1,6 @@
 # IoT Hub · 物联网接入中枢
 
-`iot_hub` — v1.0.0 · VeroRun Official Plugin · `tools` · free
+`iot_hub` — v1.2.0 · VeroRun Official Plugin · `tools` · free
 
 > **English:** An IoT device access hub for VeroRun. It ships a **built-in
 > lightweight MQTT 3.1.1 broker** (zero external dependencies) plus an HTTP device
@@ -61,8 +61,8 @@ commands, and are monitored by threshold alert rules.
 | HMAC Security · HMAC 安全 | Secret stored only as HMAC digest; per-request signature with a 5-minute replay window. | 密钥仅存 HMAC 摘要；请求级签名带 5 分钟重放窗口。 |
 | Telemetry · 遥测 | JSON payloads with dotted-path metric extraction and series queries. | JSON 遥测载荷，支持点号路径指标提取与趋势序列查询。 |
 | Commands · 指令 | queued → sent → delivered → acked state machine with TTL expiry. | queued → sent → delivered → acked 状态机，带 TTL 过期。 |
-| Alerting · 告警 | Device-scoped and global threshold rules (`> >= < <= == !=`). | 设备级与全局阈值规则（`> >= < <= == !=`）。 |
-| Retention · 保留策略 | Scheduled cleanup of telemetry older than `telemetry_retention_days`. | 定时清理超过保留期的遥测数据。 |
+| Alerting · 告警 | Device-scoped and global threshold rules (`> >= < <= == !=`) with a per-rule cooldown. | 设备级与全局阈值规则（`> >= < <= == !=`），同一规则带冷却窗口。 |
+| Retention · 保留策略 | Scheduled cleanup of telemetry, alerts and finished commands. | 定时清理遥测、告警与已结束指令。 |
 
 ---
 
@@ -97,9 +97,16 @@ The broker/bridge is **process-scoped**: in the gunicorn multi-worker admin serv
 the first worker that binds port 1883 owns the broker; other workers log and skip.
 Cross-worker command delivery is handled by the broker's own `_sweep_delivery()` loop
 (every 2 s), so queued commands reach online devices regardless of which worker
-received the admin request. A plugin-owned maintenance thread also runs the offline
-check, command expiry and retention cleanup independently of the framework's
-`register_jobs()` contract (which is declared but not auto-scheduled by the framework).
+received the admin request.
+
+Scheduled database maintenance (offline check, command expiry, retention cleanup) has a
+**single owner**: the framework scheduler, fed by `register_jobs()` (hence the declared
+`scheduler` permission). The plugin-owned thread only calls `ensure_runtime()` every
+30 s so the MQTT runtime survives worker restarts — it deliberately does not run the
+scheduled jobs, which would execute them twice.
+**Requirement:** the platform scheduler (`orchestrator` automation, initialised by the
+admin service) must be running, otherwise offline detection and retention cleanup do
+not run.
 
 ---
 
@@ -154,6 +161,14 @@ no systemd unit, no firewall surprises beyond one port). When `broker_mode=built
    HMAC digest).
 3. The broker routes three uplink topics and publishes downlink commands; it is
    auto-healing (`ensure_running()` restarts it if the thread dies).
+4. Connections are capped at `mqtt_max_connections` (default 200) and repeated
+   authentication failures from one source IP are locked out for 5 minutes after
+   5 failures in 60 s.
+
+> **Security note:** the builtin broker speaks plain MQTT 3.1.1 — `device_key` and the
+> raw secret (and all telemetry) travel in clear text. For anything beyond a trusted
+> LAN, terminate TLS in front of it (stunnel / nginx `stream` proxy on 8883 with
+> `mqtt_tls=true`), or use `broker_mode=external` against a TLS-enabled broker.
 
 **Alternative — external broker:** set `broker_mode=external`, `mqtt_host`,
 `mqtt_username`, `mqtt_password` (and `mqtt_tls=true` for 8883). The plugin then acts
@@ -173,11 +188,15 @@ Managed in Admin → Plugins → IoT Hub → Settings (also in `plugin.json` `co
 | `mqtt_port` | `1883` | Builtin broker port, or external broker port. |
 | `mqtt_host` | `""` | External broker host (external mode only). |
 | `mqtt_username` / `mqtt_password` | `""` | External broker credentials (external mode only). |
-| `mqtt_tls` | `false` | Use TLS on 8883 (external mode). |
+| `mqtt_tls` | `false` | Use TLS on 8883 (external mode). Without TLS, credentials and telemetry are plain text. |
 | `mqtt_topic_prefix` | `iot` | Topic prefix, e.g. `iot/<device_key>/telemetry`. |
+| `mqtt_max_connections` | `200` | Builtin broker connection ceiling; extra connections are rejected with CONNACK 3. |
 | `telemetry_retention_days` | `30` | Retention window; cleaned daily at 03:30. |
+| `alerts_retention_days` | `90` | Alerts older than this are deleted (resolved alerts age from `resolved_at`); cleaned daily at 03:45. |
+| `commands_retention_days` | `30` | Finished (`acked`/`failed`) commands older than this are deleted; cleaned daily at 03:45. |
 | `offline_timeout_sec` | `300` | Device offline threshold. |
-| `telemetry_max_payload_kb` | `64` | Max telemetry JSON payload size. |
+| `telemetry_max_payload_kb` | `64` | Max telemetry JSON payload size — enforced on the HTTP **and** MQTT paths (oversized MQTT packets close the connection). |
+| `alert_cooldown_sec` | `300` | Minimum interval between two alerts of the same rule for the same device (`0` = every matching reading alerts). |
 
 ---
 
@@ -242,13 +261,24 @@ Base prefix: `/admin/iot`
 
 Base prefix: `/api/iot/v1`
 
+> **Deployment requirement:** the blueprint is registered on the services that mount
+> plugin routes (main site `:8083`, admin `:8084`), **not** on the auth service that
+> nginx serves under `location /` (`:8081`). The gateway must therefore forward the
+> device prefix explicitly, e.g.
+> `location ^~ /api/iot/v1/ { proxy_pass http://127.0.0.1:8083; }` — without it every
+> device request returns 404. (Same pattern as `/api/v1/site-chat`.)
+
 Authentication options:
 
 - **HMAC signature** — headers `X-Device-Key`, `X-Timestamp` (epoch seconds),
   `X-Signature` = `hex(HMAC(secret_hash, timestamp))` where
   `secret_hash = hex(HMAC(secret, "iot_hub:v1"))`. Replay window = 300 s.
 - **Bearer token** — obtain via `POST /auth`, then
-  `Authorization: Bearer <token>`.
+  `Authorization: Bearer <token>`. Tokens carry their own `exp`; only a 60 s
+  clock-skew allowance is granted after expiry (re-issue instead of relying on it).
+
+Repeated authentication failures are throttled per source IP: 5 failures in 60 s block
+the IP for 300 s (HTTP `429 too many failed attempts`, MQTT `CONNACK 5`).
 
 | Method | Path | Description |
 |---|---|---|
@@ -300,8 +330,12 @@ plugin never changes agent behavior on its own.
   window is expected.
 - **No retained messages / no wildcard fan-out:** the broker is a minimal embedded
   implementation. Use `broker_mode=external` for production-grade broker features.
-- **v1.0 alerting has no cooldown:** every matching reading inserts an alert row;
-  deduplication/notification channels are future work.
+- **Alert cooldown suppresses, it does not aggregate:** `alert_cooldown_sec` (default
+  300 s) drops repeated alerts of the same rule for the same device inside the window;
+  there is no counter of suppressed occurrences and no notification channel yet.
+- **Scheduled maintenance depends on the platform scheduler:** offline detection,
+  command expiry and retention cleanup run through `register_jobs()`; if the
+  `orchestrator` automation is not running they do not run.
 - **HTTP devices poll commands** (`/commands/poll`) — real-time push requires MQTT.
 
 ---
@@ -312,7 +346,12 @@ plugin never changes agent behavior on its own.
 |---|---|---|
 | Broker not listening after enable | Port already in use / another worker owns it | Check `mqtt/status` (bound + clients); ensure only one process binds, or change `mqtt_port`. |
 | Device can't connect (CONNACK 4) | Wrong username/password | Username must be `device_key`, password the raw `secret`; regenerate if lost. |
+| Device can't connect (CONNACK 5) | Source IP locked out after repeated auth failures, or the connection cap is reached | Wait 300 s for the lockout, and check `mqtt_max_connections` + the broker logs. |
 | 401 `invalid signature` on HTTP API | Clock skew / stale secret | X-Timestamp within 300 s of server time; regenerate and re-issue tokens. |
+| 401 right after the token's `exp` | Token expired beyond the 60 s clock-skew allowance | Call `POST /api/iot/v1/auth` again — the 24 h grace period was removed in v1.2.0. |
+| 429 `too many failed attempts` | 5 failed authentications in 60 s from one IP | Wait 300 s, then verify the credentials. |
+| MQTT connection dropped mid-session | Payload exceeded `telemetry_max_payload_kb` (packet cap) | Raise the limit or shrink the payload; the broker closes the connection instead of reading a huge body. |
+| 404 on `/api/iot/v1/...` | The device prefix is not forwarded to a plugin-mounted service | Add `location ^~ /api/iot/v1/ { proxy_pass http://127.0.0.1:8083; }` to nginx. |
 | Command stays `queued` | Device offline or not subscribed | Device must be online (MQTT or poll); commands expire via TTL. |
 | Telemetry rejected 413 | Payload exceeds `telemetry_max_payload_kb` | Raise the limit or shrink the payload. |
 | 401 on admin API | JWT lacks `is_admin` | Log in as an admin; pass the token via `Authorization: Bearer` or cookie. |
@@ -334,12 +373,13 @@ Covered scenarios:
 - MQTT codec round-trips (CONNECT with credentials/will, PUBLISH QoS 0/1 incl. Chinese
   and binary payloads, SUBSCRIBE/UNSUBSCRIBE, PINGREQ/RESP, CONNACK codes).
 - HMAC digest determinism, signature verification with tamper/replay/clock-skew
-  rejection, device-token issuance/expiry/tamper, key extraction.
+  rejection, device-token issuance/expiry/tamper, key extraction (expiry uses the
+  60 s clock-skew allowance; a larger lapse is rejected).
 - Threshold alert evaluation against sqlite-backed rules: device-scoped, global,
   disabled, unknown operator, non-numeric paths.
 
 ---
 
-*This README reflects plugin v1.0.0. Generated from the actual source; if any behavior
-differs from this document, the source is authoritative. · 本文档对应插件 v1.0.0，
+*This README reflects plugin v1.2.0. Generated from the actual source; if any behavior
+differs from this document, the source is authoritative. · 本文档对应插件 v1.2.0，
 以实际源码为准。*
