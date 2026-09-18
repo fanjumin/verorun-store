@@ -1,7 +1,7 @@
 # AI Site Builder (site_builder)
 
 > LLM-driven website builder for VeroRun: prompt templates, site tasks, unified design tokens, style presets, page tree & themed rendering gateway.
-> Category: `content` · Agent role: `builder` · Version: `2.8.0` (plugin.json) · Min app version: `0.10.0` · Author: VeroRun
+> Category: `content` · Agent role: `builder` · Version: `2.11.0` (plugin.json) · Min app version: `0.10.0` · Author: VeroRun
 
 ## Overview
 
@@ -11,7 +11,7 @@ The plugin is deliberately **decoupled from the core**:
 
 - All plugin-owned data lives in a dedicated PostgreSQL schema `site_builder` inside the main `appdb`, accessed through the shared connection pool (no separate database server).
 - Core/shared data (`cms_blocks`, `cms_posts`, brand settings) is **not** read directly: it is reached through the main site's internal API (`/api/internal/*`) via `internal_client.py`, with LRU cache + fallbacks for reads and real-time pass-through for writes.
-- The plugin registers **5 blueprints**: `/admin/site-builder/*` (build console), `/admin/site-settings/*` (design tokens), `/shop/*` (user-facing plugin store), `/page/*` and `/site/*` (public rendering gateway).
+- The plugin registers **7 blueprints**: `/admin/site-builder/*` (build console), `/admin/site-settings/*` (design tokens), `/admin/site-analyzer/*` (style analyzer), `/shop/*` (user-facing plugin store), `/page/*` and `/site/*` (public rendering gateway), and `/plugin/site_builder/api/v1/site-chat` (in-site chat; that blueprint defines no `url_prefix`, so the prefix is assigned by plugin_manager).
 
 ## Highlights
 
@@ -115,7 +115,7 @@ On top of the 10 classic block types, a **control layer** of rich blocks was add
 | `theme_registry.py` | Active theme from `tokens.theme.active_theme_id`, default `builtin`; any error/unknown theme falls back to `builtin` (never 500) |
 | `template_hierarchy.py` | Resolves `page-{slug}.html → page-{page_type}.html → page.html → index.html` |
 | `block_names.py` | `block_type` → safe partial name; unknown types → `_fallback.html` (never raw output, never 500) |
-| `block_registry.py` | Per-block render hooks: `register_block_partial(type, path)` / `register_block_renderer(type, 'pkg.mod.callable')`; hook exceptions fall back to the partial |
+| `block_registry.py` | **Reserved extension point (not wired into the render path yet)**: `register_block_partial(type, path)` / `register_block_renderer(type, 'pkg.mod.callable')`; when wired, hook exceptions fall back to the partial |
 
 The public router `render_page` renders through `_render_themed()` (registry + hierarchy + partials); any template resolution error falls back to the legacy `templates/public/page.html` — zero 500. The built-in theme lives in `templates/themes/builtin/` (`layout.html` shell + `index.html` generic page + `blocks/*` partials for the 10 core types + `_fallback.html`); the 10 core block types render byte-identical to the legacy template (zero behavior regression).
 
@@ -207,6 +207,7 @@ Migration is executed on install/enable/setup with a transaction-level advisory 
 | `shop_bp` | `/shop` | plugin & skill store pages |
 | `site_public_bp` | `/page` | published page rendering gateway |
 | `site_public_site_bp` | `/site` | sitemap.xml, robots.txt |
+| `site_chat_bp` | `/plugin/site_builder` | in-site chat (`POST /api/v1/site-chat`); declares no `url_prefix`, so plugin_manager assigns the prefix |
 
 Style analyzer API (`/admin/site-analyzer/*`):
 
@@ -235,8 +236,8 @@ Dashboard stats: `total_tasks`, `completed_tasks`, `total_prompts`, `total_analy
 | New style preset | `style_presets.py`: `_preset(...)` entry + keywords in `resolve_style_preset()` |
 | New capability / block type | Have the provider plugin declare `site_capabilities` in its `plugin.json`; add the mapping in `capabilities.CAPABILITY_BLOCKS` and a matching partial under `templates/themes/builtin/blocks/` (and any new type into `_SUPPORTED_BLOCKS` if it should be theme-agnostic). For a new *control* block also register it in `block_schemas.py` (`BASE_CONTROL_BLOCK_TYPES`) and add its enum/limit/URL rules to `sanitize_sections()`. |
 | Custom theme | New `templates/themes/<id>/` dir with `theme.json` + `layout.html` + `index.html` (+ optional `page-*.html`, `blocks/*`); switch via `tokens.theme.active_theme_id` |
-| Block render hook from another plugin | `register_block_partial(type, path)` or `register_block_renderer(type, 'pkg.mod.fn')` (aligns with `add_filter('block/<type>')` semantics) |
+| Block render hook from another plugin | **Reserved — not wired yet.** `register_block_partial(type, path)` / `register_block_renderer(type, 'pkg.mod.fn')` exist in `block_registry.py` but are not called by the render path, so registration currently has no effect (aligns with `add_filter('block/<type>')` semantics once wired) |
 
 ## Changelog
 
-See [CHANGELOG.md](./CHANGELOG.md). `plugin.json` is at `2.8.0`; its *Unreleased* sections describe the 2026-09 control-blocks upgrade (Phase 1), the themed-rendering kernel, style presets, capability linking and the page tree (M1) that landed on `master` ahead of release.
+See [CHANGELOG.md](./CHANGELOG.md). `plugin.json` is at `2.11.0`; its *Unreleased* sections describe the 2026-09 control-blocks upgrade (Phase 1), the themed-rendering kernel, style presets, capability linking and the page tree (M1) that landed on `master` ahead of release.
