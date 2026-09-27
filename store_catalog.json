@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-09-18T00:49:38.205938",
+  "updated_at": "2026-09-27T05:53:37.048756",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1286,6 +1286,45 @@
       "depends_on": {},
       "screenshots": [],
       "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/ros_bridge/README.md",
+      "is_official": true,
+      "developer_id": 0,
+      "developer_org": ""
+    },
+    {
+      "identifier": "neural_flow",
+      "name": "NeuralFlow",
+      "description": "Platform-level AI dataflow observability base — NeuralFlow spans, Domain Profiles and cross-domain replay for the NeuralHub dashboard.",
+      "version": "1.0.0",
+      "author": "fanjumin",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "price_quarter_fen": 0,
+      "price_year_fen": 0,
+      "compatible_editions": [
+        "finance",
+        "enterprise",
+        "standard",
+        "pro"
+      ],
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/neural_flow-v1.0.0/neural_flow-v1.0.0.zip",
+      "package_hash": "07f6fd5df6b6e2fd98ca8f5834de0a04e279c49cadec8dced2538ac926c0f2f0",
+      "file_size": 28253,
+      "category": "ai_agent",
+      "tags": [
+        "observability",
+        "dataflow",
+        "llm",
+        "agent",
+        "trace"
+      ],
+      "min_app_version": "0.10.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": "",
       "is_official": true,
       "developer_id": 0,
       "developer_org": ""
