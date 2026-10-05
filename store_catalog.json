@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-04T13:59:48.359571",
+  "updated_at": "2026-10-05T01:19:00.827367",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1340,7 +1340,7 @@
       "identifier": "ai_relay",
       "name": "AI Relay Station",
       "description": "OpenAI-compatible API relay with multi-channel routing, token issuance, credit metering and billing",
-      "version": "1.4.1",
+      "version": "1.5.0",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -1355,9 +1355,9 @@
         "pro"
       ],
       "trial_days": 14,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/ai_relay-v1.4.1/ai_relay-v1.4.1.zip",
-      "package_hash": "68a78ee3b55d188e63342f7bc06c77139e4411b0916dab2182fccb7fff709c22",
-      "file_size": 141321,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/ai_relay-v1.5.0/ai_relay-v1.5.0.zip",
+      "package_hash": "965189099e8eea7140b000d18c5641f28533f4fcb101d295355b382a2ab0e64f",
+      "file_size": 167051,
       "category": "ai_agent",
       "tags": [
         "ai",
