@@ -2,23 +2,27 @@
 
 ## Overview
 
-Social Push is VeroRun's multi-platform social media content publishing plugin. It supports seven platforms: WeChat Official Account, Weibo, Toutiao, Twitter/X, LinkedIn, Reddit, and Telegram Channel. The plugin stores publish history in a dedicated PostgreSQL schema `social_push`, while delegating the core publishing logic to the corresponding service layer in auth-center.
+Social Push is VeroRun's multi-platform social media content publishing plugin. It supports seven platforms: WeChat Official Account, Weibo, Toutiao, Twitter/X, LinkedIn, Reddit, and Telegram Channel.
 
-The plugin uses a Provider pattern to manage international platforms (Twitter, LinkedIn, Reddit, Telegram); domestic platforms (WeChat, Weibo, Toutiao) directly reuse auth-center's push services. AI copywriting and AI image generation go through the platform-wide shared LLM service (`ai_content_generator`) and are decoupled from the publishing channels.
+**As of v2.0.0**, all social-media OAuth, account management, publishing, and token refresh have been migrated back from `im_gateway` — social_push is now the **single owner** of social media business, and `im_gateway` has returned to pure IM. The plugin stores publish history and channel accounts in a dedicated PostgreSQL schema `social_push`.
+
+The plugin uses a Provider pattern for international platforms (Twitter, LinkedIn, Reddit, Telegram); domestic platforms (WeChat, Weibo, Toutiao) reuse their respective push services. AI copywriting and AI image generation go through the platform-wide shared LLM service (`ai_content_generator`) and are decoupled from publishing channels.
 
 ## Features
 
 - **Seven platforms**: WeChat Official Account, Weibo, Toutiao, Twitter/X, LinkedIn, Reddit, Telegram Channel
+- **OAuth & account management** (v2.0.0): channel accounts stored in the plugin's own `channel_accounts` table (JSON format, including `__app__` row for per-platform app credentials); OAuth blueprint mounted under `/admin/channels/oauth`; admin UI adds **Accounts** and **OAuth Connections** tabs
+- **Token auto-refresh** (v2.0.0): APScheduler job refreshes expired access tokens per platform
+- **Idempotent data migration** (v2.0.0): historical channel accounts from `im_gateway` migrated on first enable (batch B1)
 - **Provider pattern**: international platforms extend via adapters under `providers/` with a unified interface
-- **AI copywriting**: Tongyi Qianwen based content generation (shared LLM service, not plugin-private)
+- **AI copywriting**: Tongyi Qianwen based content generation (shared LLM service)
 - **AI cover image**: Tongyi Wanxiang based cover image generation (shared LLM service)
 - **Publish history**: complete publish log with per-platform filtering and pagination
 - **CMS article import**: import already-published CMS articles into the social editor
 - **Publish status query**: WeChat publish status callback support
-- **Config detection**: automatically detects each platform's config status, distinguishing configured vs unconfigured platforms
-- **Market awareness**: distinguishes domestic/international markets via the `DEPLOY_MARKET` env var, dynamically showing available platforms
-- **Dedicated database**: PostgreSQL schema `social_push` with the `social_push_logs` table
-- **Data migration**: idempotently migrates historical publish records from the main database on first startup
+- **Config detection**: automatically detects each platform's config status
+- **Market awareness**: distinguishes domestic/international markets via `DEPLOY_MARKET` env var
+- **Dedicated database**: PostgreSQL schema `social_push` with publish logs + channel accounts
 
 ## Architecture
 
@@ -108,17 +112,21 @@ social_push/
 +-- README_CN.md                 # Plugin documentation (Chinese)
 +-- plugin.json                  # Plugin metadata configuration
 +-- __init__.py                  # Plugin entry, blueprint & Hook registration
-+-- models.py                    # Data model (connection, table creation, main-db migration)
-+-- routes.py                    # Admin API routes (config detection, AI generation, publish, history)
++-- models.py                    # Publish logs data model
++-- models_accounts.py           # Channel accounts data model (v2.0.0)
++-- routes.py                    # Admin API routes (publish, history, AI generation)
++-- routes_oauth.py              # OAuth callback routes (v2.0.0, /admin/channels/oauth)
++-- scheduler.py                 # Token auto-refresh scheduler (v2.0.0)
++-- crypto.py                    # Credential encryption helpers
 +-- providers/
 |   +-- __init__.py              # Provider registration & factory functions
 |   +-- base.py                  # Provider abstract base class
 |   +-- twitter.py               # Twitter/X Provider
-|   +-- linkedin.py              # LinkedIn Provider
-|   +-- reddit.py                # Reddit Provider
-|   +-- telegram_channel.py      # Telegram Channel Provider
+|   +-- linkedin.py               # LinkedIn Provider
+|   +-- reddit.py                 # Reddit Provider
+|   +-- telegram_channel.py       # Telegram Channel Provider
 +-- i18n/
-|   +-- en.yml                   # English internationalization
+|   +-- en.yml                   # English internationalization (242 keys)
 |   +-- zh-CN.yml                # Chinese internationalization
 +-- templates/
     +-- admin_socialpush.html    # Admin dashboard page template
@@ -151,31 +159,22 @@ social_push/
 
 ## Configuration
 
-Platform configurations are managed independently and stored in auth-center's `system_config` table.
+As of v2.0.0, channel accounts and OAuth credentials are managed in the plugin's own `channel_accounts` table (JSON format), not in auth-center's `system_config`. The admin UI provides two dedicated tabs: **Accounts** and **OAuth Connections** for connect / credential management / token refresh / revoke / test publish.
 
-### Domestic Platforms
+App-level credentials (per-platform AppID/AppSecret) are stored in a special row with `account_key='__app__'`.
 
-| Platform | Config keys |
+### Environment Variables
+
+| Variable | Description |
 |----------|-------------|
-| WeChat Official Account | `wechat_app_id`, `wechat_app_secret` |
-| Weibo | `weibo_app_key`, `weibo_access_token` |
-| Toutiao | `toutiao_app_id`, `toutiao_access_token` |
-
-### International Platforms
-
-| Platform | Config keys |
-|----------|-------------|
-| Twitter/X | `twitter_api_key`, `twitter_api_secret`, `twitter_access_token`, `twitter_access_secret`, `twitter_bearer_token` |
-| LinkedIn | `linkedin_client_id`, `linkedin_client_secret`, `linkedin_access_token` |
-| Reddit | `reddit_client_id`, `reddit_client_secret`, `reddit_username`, `reddit_password` |
-| Telegram | `telegram_bot_token`, `telegram_channel` |
+| `DEPLOY_MARKET` | Deployment market: `cn` (domestic only) / `intl` (all platforms) |
 
 ### AI Capabilities
 
-| Capability | Config key |
-|------------|------------|
-| AI copywriting (Tongyi Qianwen) | `dashscope_text_key` |
-| AI cover image (Tongyi Wanxiang) | `dashscope_api_key` |
+| Capability | Config |
+|------------|--------|
+| AI copywriting (Tongyi Qianwen) | via shared `ai_content_generator` service |
+| AI cover image (Tongyi Wanxiang) | via shared `ai_content_generator` service |
 
 ## API Endpoints
 
