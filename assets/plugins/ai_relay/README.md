@@ -86,7 +86,7 @@ client ──> auth (token + brute-force guard)
 ## Requirements
 
 - VeroRun host application (`min_app_version: 0.10.0`)
-- Python package: `httpx`; optional: `tiktoken` (accurate token counts),
+- Python packages: `httpx`, `tiktoken` (accurate token counts); optional:
   `anthropic` (native Anthropic adapter)
 - Environment variable **`ENCRYPTION_KEY`** (>= 16 characters). Upstream API
   keys cannot be added until it is set.
@@ -143,6 +143,7 @@ fail-closed).
 | `freeze_reconcile` | every 10 min | Settle/release stale frozen requests |
 | `daily_backfill` | 03:30 | Rebuild previous-day daily stats |
 | `rate_events_cleanup` | 04:00 | Delete rate events older than 7 days |
+| `usage_logs_cleanup` | 04:30 | Delete usage logs past the region retention window (CN 180d / OS 30d) |
 | `entitlement_expire` | 01:30 | Expire passed grants |
 | `orphan_cleanup` | 02:00 | Remove rows of deleted users |
 | `monthly_grant` | 1st 01:00 | Industry-plan monthly credit grants |
@@ -162,7 +163,7 @@ multiple workers.
 - SSRF validation applies to every selected channel on every request, not
   only at configuration time.
 
-## Current limitations (1.4.1)
+## Current limitations (1.5.0)
 
 - Legacy `*_per_1k` pricing columns are retained but frozen for rollback
   safety; billing, admin and `/v1/models` all use the `*_per_1m` columns
@@ -179,6 +180,19 @@ multiple workers.
 
 ## Changelog
 
+- **1.5.0** — regional compliance convergence (CN vs. OS). The deployment-level
+  ceiling resolves from `VR_PROFILE` (falling back to `APP_REGION`); a
+  token-level `region_policy` can only tighten below it, never escalate. Under
+  CN the relay is limited to `chat`/`embedding`, upstream channels are limited
+  to the CN region and region-agnostic (`any`) channels, inbound content safety
+  is enabled (fail-closed keyword checker, extensible via the
+  `ai_relay_content_check` filter), and usage logs
+  are retained 180 days instead of 30. Compliance rejections answer
+  `403 model_not_allowed` / `400 content_policy_violation` **before** quota
+  freeze, so a blocked request never freezes balance and leaves no usage log.
+  New admin export `GET /admin/compliance/export` bundles registration/audit
+  material with no secrets and no wordlist. Per-token quota becomes a rolling
+  window aligned with the retention period.
 - **1.4.1** — defects reported by a third-party test run against a live
   install: non-retryable upstream 4xx now answer with the real status code
   and the upstream `error.type`/`error.message` instead of collapsing into
