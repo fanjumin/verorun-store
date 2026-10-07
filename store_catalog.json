@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-07T05:00:37.277892",
+  "updated_at": "2026-10-07T05:08:07.920665",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1421,7 +1421,7 @@
       "identifier": "multi_asset",
       "name": "Multi-Asset Data",
       "description": "Multi-asset (futures, options, funds, bonds) market data with CFI-aligned instrument typing (ISO 10962:2021), exchange double-field modelling, and a governance-ready storage layer that tags every bar with license, security level, origin and dataset lineage. Reuses the stock_analysis provider contract and data gateway instead of duplicating them.",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -1434,9 +1434,9 @@
         "finance"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/multi_asset-v1.2.1/multi_asset-v1.2.1.zip",
-      "package_hash": "d84b493c008c3902605b56e8bf15124cf3630f37357bc93732d4fda34806b3ff",
-      "file_size": 117867,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/multi_asset-v1.2.2/multi_asset-v1.2.2.zip",
+      "package_hash": "479f5b330abe9fee2e9546393a56e7c7078b355d06a3a87b8745473826d0f150",
+      "file_size": 121431,
       "category": "ai_agent",
       "tags": [
         "finance",
