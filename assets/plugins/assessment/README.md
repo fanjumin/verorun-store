@@ -1,17 +1,22 @@
-# Psychometric Assessment (`assessment` v1.1.0)
+# Psychometric Assessment (`assessment` v1.1.1)
 
 Versioned instruments, CTT scoring with explicit point maps, norm conversion,
 reliability estimation and an auditable answer trail. The plugin owns its
-schema, routes and pages; the generic questionnaire parts come from a shared
-kernel.
+schema, routes, admin pages, a login-only answering page and server-side PDF
+export; the generic questionnaire parts come from a shared kernel.
 
 - **Identifier:** `assessment`
-- **Version:** 1.0.0
+- **Version:** 1.1.1
 - **Category:** ai_agent · **Menu:** Analysis → Instruments / Sessions / Results
 - **Min app version:** 0.10.0 · **Core API:** 1
 - **Editions:** enterprise, standard, pro, minipro, finance
 - **Agent role:** `survey` (reused; no new role was introduced)
 - **Permissions:** `routes`, `scheduler`, `admin:access`
+- **Python dependency:** `reportlab>=4` (PDF export only; see `requirements.txt`)
+
+**Documentation:** technical reference — this file (and `README_CN.md`).
+User manual — [`docs/user-guide.md`](docs/user-guide.md) /
+[`docs/user-guide_CN.md`](docs/user-guide_CN.md).
 
 ## Dependencies and boundaries
 
@@ -31,8 +36,8 @@ nothing else; neither plugin imports the other.
 - `assessment` owns the PostgreSQL schema of the same name, with no foreign key
   pointing into `survey`. Uninstall runs `DROP SCHEMA assessment CASCADE` and
   leaves survey data untouched.
-- Answering is login-only and results are per-subject; the plugin renders no
-  respondent UI, so an external frontend or mini program owns presentation.
+- Answering is login-only and results are per-subject. The plugin ships its own
+  answering page and report page; the frontend only wires navigation.
 
 ## Feature surface
 
@@ -94,26 +99,57 @@ statistics, and records the action.
 
 | Blueprint | Prefix | Auth | Scope |
 |---|---|---|---|
-| `admin_bp` | `/plugin/assessment` | admin session | instruments, versions, publish, norms, batches, sessions, results, audit, erasure |
+| `admin_bp` | `/plugin/assessment` | admin session | pages + instruments, versions, publish, norms, batches, sessions, results, audit, erasure |
 | `answer_bp` | `/assessment` | login required | `GET /answer/<id>` (answering page), `POST /api/start`, `POST /api/<sid>/submit`, `GET /api/<sid>/report`, `GET /api/<sid>/report/pdf` |
 | `report_bp` | `/assessment/report` | page only | `GET /<sid>` renders the printable report |
 
-Admin API surface: `GET|POST /api/instruments`, `GET /api/instruments/<id>`,
-`PUT .../versions/<vid>`, `POST .../versions/<vid>/clone`,
-`POST .../versions/<vid>/publish`, `GET .../reliability`, `GET|PUT .../norms`,
-`GET|POST /api/batches`, `GET /api/sessions`, `GET /api/sessions/<id>`,
-`GET /api/sessions/<id>/report`, `POST /api/sessions/<id>/rescore`,
-`POST /api/sessions/<id>/void`, `GET /api/audit`,
-`DELETE /api/subjects/<subject_user_id>`, `GET /api/error-codes`.
+Admin pages: `GET /plugin/assessment/instruments`, `.../sessions`,
+`.../results` (all require an admin session; embedded in the menu as iframes).
 
-The answering page (`GET /assessment/answer/<id>`) is self-contained: it consumes
-the existing `start` / `submit` endpoints only, renders the whitelisted question
-projection (`point_map` / `reverse` / `dimension` never reach the browser), and
-dispatches `change` on every custom control. Reports download as PDF through
-`GET /assessment/api/<sid>/report/pdf` — drawn server-side with reportlab (no
-Chrome on target machines; `STSong-Light` CID font for CJK), permissioned by the
-same gate as the web report (respondent directly, admin with `?confirm=1` +
-audit). `rescore` re-runs scoring on an existing result without touching session
+Admin API surface:
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/instruments` | paged (`page`, `page_size`, `status`, `q`) |
+| POST | `/api/instruments` | create instrument + v1 draft; duplicate key → 409 `instrument_key_exists` |
+| GET | `/api/instruments/<id>` | definition + versions + latest items + scoring + norm summary |
+| PUT | `/api/instruments/<id>/versions/<vid>` | edit a draft (frozen → 422) |
+| POST | `/api/instruments/<id>/versions/<vid>/clone` | new draft from an existing version |
+| POST | `/api/instruments/<id>/versions/<vid>/publish` | freeze; rejects empty or inconsistent drafts |
+| GET | `/api/instruments/<id>/reliability` | alpha / split-half per dimension (`?version_id=`) |
+| GET | `/api/instruments/<id>/norms` | `dimension` omitted = **total table (NULL dimension)**, not all dimensions |
+| PUT | `/api/instruments/<id>/norms` | whole-table replace; every row needs `source`; `version_id` omitted = latest **published** version (409 if none) |
+| GET | `/api/batches` | paged, filter by `instrument_id` |
+| POST | `/api/batches` | duplicate key → 409 `batch_key_exists` |
+| GET | `/api/sessions` | paged, filter by instrument / version / status |
+| GET | `/api/sessions/<id>` | detail; item-level rows need `?confirm=1` (409 first, audited) |
+| GET | `/api/sessions/<id>/report` | same confirmation gate |
+| POST | `/api/sessions/<id>/rescore` | re-run scoring on an existing result; audited |
+| POST | `/api/sessions/<id>/void` | void a session; audited |
+| GET | `/api/audit` | paged, filter by `action` |
+| DELETE | `/api/subjects/<subject_user_id>` | GDPR-style erasure; anonymises sessions |
+| GET | `/api/error-codes` | self-check: missing strategies, report types, constants |
+
+**Answering page** (`GET /assessment/answer/<id>`, optional `?batch=<key>`)
+is self-contained: it consumes the existing `start` / `submit` endpoints only,
+renders the whitelisted question projection (`point_map` / `reverse` /
+`dimension` never reach the browser — the server strips them and the page
+re-filters), and dispatches `change` on every custom control (scale buttons and
+ranking rows have no native `change`; anything listening would silently go
+stale). The consent checkbox is a hard gate: `start` rejects a missing consent
+text hash, so the page cannot be bypassed.
+
+**PDF export** (`GET /assessment/api/<sid>/report/pdf`) is drawn server-side
+with reportlab — target machines have no Chrome, so there is no headless
+browser in the loop. CJK text uses the Adobe CID font `STSong-Light` (base14
+fonts have no CJK glyphs and would render Chinese as boxes); every drawn string
+picks its font by content, and the page label uses the placeholder key
+`Page {page}` so word order stays correct in both locales. Permissioned by the
+same gate as the web report: the respondent directly, an admin with
+`?confirm=1` + audit. `?lang=zh-CN` / `?lang=en` selects the report language
+(`?lang=` → cookie → `Accept-Language`).
+
+`rescore` re-runs scoring on an existing result without touching session
 state, and is audited.
 
 ## Scoring configuration
@@ -250,10 +286,13 @@ missing `source` and out-of-range percentiles).
 
 - **No visual item designer.** Instruments are created by `POST
   /api/instruments` with a full `questions` + `scoring` payload. The admin page
-  can list, inspect, publish, clone and manage norms, but its "create" button
-  submits an empty payload and the API rejects it with `scoring_dims_empty`;
-  the page is an operations shell, not an editor.
+  can list, inspect, publish, clone, import norms and create batches, but its
+  "create" button submits an empty payload and the API rejects it with
+  `scoring_dims_empty`; the page is an operations shell, not an editor. See the
+  user guide for a copy-ready JSON example.
 - **`hooks.provides` declares `assessment.session.submitted`, but nothing
   emits it yet.** The declaration is ahead of the wiring.
 - **No MCP tools.** Item-level responses and results are deliberately not
   exposed to agents in bulk.
+- **No group/team reporting.** Reliability is group-level, but there is no
+  cohort comparison view; sessions are listed individually.
