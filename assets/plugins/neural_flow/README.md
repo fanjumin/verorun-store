@@ -1,103 +1,107 @@
-# NeuralFlow (neural_flow)
+# NeuralFlow (`neural_flow`)
 
-## Overview
+> Platform-level AI dataflow observability base. Records NeuralFlow spans,
+> loads Domain Profiles, and supports cross-domain replay for the NeuralHub
+> dashboard.
 
-NeuralFlow is VeroRun's platform-level AI dataflow observability base — the backend for the NeuralHub dashboard. It provides spans, Domain Profiles, and cross-domain replay for visualizing how data flows through the platform's AI agents.
+- **Identifier:** `neural_flow`
+- **Version:** 1.1.0
+- **Category:** ai_agent
+- **Min app version:** 0.10.0
+- **Agent role:** `ops`
+- **Python deps:** none (optional `pyyaml` for external Domain Profile scan)
 
-The visualization engine is industry-agnostic: all domain-specific rendering is declared via **Domain Profiles** (`domain.yaml` or built-in profiles), so adding a new industry domain requires zero changes to the rendering engine. The stock domain (`stock_analysis`) is the first data source.
+---
 
-## Features
+## Core Features
 
-- **Spans**: every agent task, LLM call, and plugin lifecycle event becomes a span, archived in the `nf_flow_spans` table (30-day retention)
-- **Domain Profiles**: declarative pipeline stages, decision routes, arches, and color mapping per industry domain — the rendering engine stays generic
-- **Incremental collector**: cursor-based incremental poll of platform tables (`agent_token_logs` → LLM-domain span), with advisory-lock mutual exclusion across workers
-- **Real-time SSE**: reuses the existing `stock_analysis` SSE single connection (`topic=flow`) — no new concurrent connection gate
-- **Event-driven spans**: subscribes to `agent.task.completed` and plugin lifecycle events to emit agent/system-domain spans
-- **Profile registry**: built-in profiles (`platform`, `stock`) + external profiles scanned from other plugins' `domain.yaml`; schema validation failures are rejected with logged errors (never block other domains)
+### 1. Span collection (`collectors.py`, 7.8 KB)
+- Incremental cursor poll on platform tables (agent_token_logs etc.).
+- `collector_interval_seconds=5`.
+- Spans in `nf_flow_spans`.
 
-## Architecture
+### 2. Span retention
+- `span_retention_days=30` — daily prune.
 
-```
-NeuralHub Dashboard (frontend)
-    │
-    ├── Real-time:  SSE via stock_analysis /api/events (topic=flow)
-    │               SDK dual-write → sa_sse_events (stock_analysis-owned table)
-    │
-    └── Archive:    GET /admin/neural-flow/api/spans
-                    nf_flow_spans (own schema, 30-day retention)
-    │
-    ▼
-Collector (interval job, default 5s)
-  incremental cursor poll → agent_token_logs → llm-domain spans
-  advisory lock (0x6E464C57) — single worker executes across multi-worker
-    │
-    ▼
-EventBus subscribers
-  agent.task.completed → agent-domain span
-  plugin.installed/enabled/disabled → system-domain span + profile refresh
-    │
-    ▼
-Domain Profile Registry (profile_registry.py)
-  builtin: platform / stock
-  external: other plugins' domain.yaml (schema-validated, rejected on failure)
-```
+### 3. Domain Profile (`profile_registry.py`, 13.3 KB)
+- Loads external Domain Profiles (requires pyyaml).
+- Without pyyaml, only built-in profiles available.
 
-## Data Model
+### 4. Cross-domain replay
+- `sdk.py` (6 KB) — SDK.
+- `sse_stream.py` (7.5 KB) — SSE push.
 
-Independent PostgreSQL schema `neural_flow`:
+### 5. Hooks listened
+- `agent.task.completed`, `plugin.installed`, `plugin.enabled`,
+  `plugin.disabled` — auto-update profile on plugin install / toggle.
+
+### 6. Execution-level observability (v1.1.0)
+- **Execution join (`join.py`)** — `join_execution()` merges traces from
+  `public.agent_tasks` / `agent_token_logs` / `nf_flow_spans` by
+  `trace_id` (= `task_id` priority, falls back to `module`). Read-only over
+  upstream tables; results are recomputable derived data.
+  `joined_by` marks the join quality: `task_id` (full join) vs
+  `module_fallback` (task-level degraded view, no spans).
+- **Per-trace execution view** — `obs_execution_view` holds outcome
+  (7-state status map), duration, total tokens, confidence and the derived
+  tree (`parent_task_id` / `master_task_id`). `duration_ms` uses
+  `agent_tasks.started_at` / `completed_at` and falls back to span `ts`
+  spread; it never uses the nonexistent `agent_token_logs.elapsed_ms`.
+- **Stage attribution** — `obs_attribution` aggregates spans per `stage`
+  with dual shares: `share_of_total_tokens` vs `share_of_duration`
+  (mismatch is the insight). Anchor spans (`event='anchor'`) are excluded.
+- Endpoints: `GET /api/executions`, `GET /api/executions/<trace_id>`,
+  `GET /api/attribution/<trace_id>`.
+- Migration: `migrations/v1.1.0_observatory.sql` (idempotent).
+
+---
+
+## At a glance
+
+| Area | Value |
+|---|---|
+| Storage | PG schema `neural_flow`, **3 tables** |
+| Blueprint | `/api/neural-flow` (`routes.py`, 7 KB) |
+| Collectors | `collectors.py` (7.8 KB) |
+| Profile | `profile_registry.py` (13.3 KB) |
+| SSE | `sse_stream.py` (7.5 KB) |
+| SDK | `sdk.py` (6 KB) |
+| Python deps | none (optional pyyaml) |
+| Permissions | routes, scheduler, events |
+| Capabilities | neural_flow.base, neural_flow.profile, neural_flow.obs_execution, neural_flow.obs_attribution |
+| Hooks listened | agent.task.completed, plugin.installed/enabled/disabled |
+
+### 3 tables
 
 | Table | Purpose |
-|-------|---------|
-| `nf_flow_spans` | Archived spans (domain, trace_id, entity JSONB, payload JSONB, source, source_id) |
+|---|---|
+| `nf_flow_spans` | Dataflow spans (30-day archive) |
+| `obs_execution_view` | Per-trace joined execution view (derived, v1.1.0) |
+| `obs_attribution` | Per-stage attribution with dual shares (derived, v1.1.0) |
 
-Indexes: `(domain, created_at)`, `(trace_id)`, unique `(source, source_id)` for collection idempotency.
+### Config (2 items)
 
-## Configuration
+| Key | Default | Purpose |
+|---|---|---|
+| `collector_interval_seconds` | 5 | Collection poll interval |
+| `span_retention_days` | 30 | Span retention days |
 
-| Key | Default | Description |
-|-----|---------|-------------|
-| `collector_interval_seconds` | 5 | Incremental cursor poll interval for platform tables |
-| `span_retention_days` | 30 | `nf_flow_spans` archive retention before daily prune |
+---
 
-## API Endpoints
+## Five-minute quick start
 
-> All endpoints require admin JWT. Response envelope: `{ok: bool, data: ..., error: ...}`.
-> Prefix: `/admin/neural-flow`
+1. Enable — auto-creates table.
+2. Install pyyaml (optional, for external Domain Profile scan).
+3. Wait for collector to poll platform tables.
+4. NeuralHub dashboard shows spans.
+5. Plugin install / toggle auto-updates profile.
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/profiles` | Domain Profile registry (including rejected profiles with error details) |
-| GET | `/api/spans` | Span replay query (`from`, `to`, `domain`, `trace_id`, `limit` ≤ 2000) |
-| GET | `/api/events` | SSE real-time stream (`topics=flow`, `Last-Event-ID` resume) |
+---
 
-### SSE Concurrency
+## Documents
 
-- Default max concurrent SSE connections: **2** (env `NF_SSE_MAX_CONNECTIONS`, range 1–16)
-- Gate full → HTTP 503 + `Retry-After: 10` (no queueing)
-- Outbox unavailable → HTTP 503 + `Retry-After: 60` (rejected before taking a slot)
-
-## Python Dependencies
-
-Required: none
-Optional: `pyyaml` (external Domain Profile scanning; without it only built-in profiles are available)
-
-## Permissions
-
-- `routes`, `scheduler`, `events`
-
-## Hooks
-
-- **Provides**: none
-- **Listens**: `agent.task.completed`, `plugin.installed`, `plugin.enabled`, `plugin.disabled`
-
-## Compatible Editions
-
-- All editions (`compatible_editions: []` — no restriction)
-
-## Uninstall
-
-Drops the `neural_flow` schema and `nf_flow_spans` table — zero residue. If foreign objects exist in the schema, the drop is refused (leaves residue rather than deleting foreign data).
-
-## License
-
-This plugin is part of the VeroRun platform and follows its unified license agreement.
+| Document | Audience | Location |
+|---|---|---|
+| This file | Platform engineers / SRE | `README.md` |
+| Technical whitepaper | Developers | [`docs/whitepaper.md`](docs/whitepaper.md) |
+| Changelog | All | [`CHANGELOG.md`](CHANGELOG.md) |
