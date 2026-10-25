@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-25T03:25:05.996677",
+  "updated_at": "2026-10-25T09:37:27.138797",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1351,7 +1351,7 @@
       "identifier": "neural_flow",
       "name": "NeuralFlow",
       "description": "Platform-level AI dataflow observability base — NeuralFlow spans, Domain Profiles, cross-domain replay, plus execution-level observability (per-trace execution view and stage attribution).",
-      "version": "1.1.0",
+      "version": "1.2.1",
       "author": "fanjumin",
       "author_url": "",
       "icon_url": "",
@@ -1362,9 +1362,9 @@
       "price_year_fen": 0,
       "compatible_editions": [],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/neural_flow-v1.1.0/neural_flow-v1.1.0.zip",
-      "package_hash": "d5f626019b915d1aca946d6922b89e2a157ce84f270db6b268ad77ca4fab0605",
-      "file_size": 78295,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/neural_flow-v1.2.1/neural_flow-v1.2.1.zip",
+      "package_hash": "106fd51ac63a99358b38f94314db63b4eafa9195195098f8193e5f052ec7c650",
+      "file_size": 119716,
       "category": "ai_agent",
       "tags": [
         "observability",
