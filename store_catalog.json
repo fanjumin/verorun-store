@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-25T14:01:39.966072",
+  "updated_at": "2026-10-27T18:49:43.118631",
   "plugins": [
     {
       "identifier": "analytics",
@@ -178,7 +178,7 @@
       "identifier": "content_factory",
       "name": "Content Factory",
       "description": "Content Factory — Multi-source content collection, AI processing, review workflow, publishing, skill push, and static page generation",
-      "version": "1.6.3",
+      "version": "1.8.2",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -187,11 +187,17 @@
       "price_interval": "onetime",
       "price_quarter_fen": 0,
       "price_year_fen": 0,
-      "compatible_editions": [],
+      "compatible_editions": [
+        "enterprise",
+        "standard",
+        "pro",
+        "finance",
+        "minipro"
+      ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/content_factory-v1.6.3/content_factory-v1.6.3.zip",
-      "package_hash": "884710477c1ff0991b4fd51819afc7ae661ab5fb0291230164fb07ad25729fbf",
-      "file_size": 40847,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/content_factory-v1.8.2/content_factory-v1.8.2.zip",
+      "package_hash": "200827b032769db24d006fa922ebc94af75d62d1af597f937822dff657784c48",
+      "file_size": 84273,
       "category": "content",
       "tags": [
         "content",
@@ -204,7 +210,7 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "",
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/content_factory/README.md",
       "is_official": true,
       "developer_id": 0,
       "developer_org": ""
