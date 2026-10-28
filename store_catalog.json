@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-27T18:50:02.040709",
+  "updated_at": "2026-10-28T00:39:48.002710",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1539,6 +1539,38 @@
       "depends_on": {},
       "screenshots": [],
       "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/blender_bridge/README.md",
+      "is_official": true,
+      "developer_id": 0,
+      "developer_org": ""
+    },
+    {
+      "identifier": "chaos_engine",
+      "name": "Chaos Engine",
+      "description": "Descriptive chaos/nonlinear-dynamics risk primitives (phase-space reconstruction in P0; Lyapunov/Hurst/fractal/entropy in P1). Fail-closed, evidence-linked, replayable. No trading signals, no investment advice.",
+      "version": "1.2.3",
+      "author": "VeroRun",
+      "author_url": "",
+      "icon_url": "",
+      "price_type": "free",
+      "price_amount": 0,
+      "price_interval": "onetime",
+      "price_quarter_fen": 0,
+      "price_year_fen": 0,
+      "compatible_editions": [
+        "finance",
+        "research",
+        "enterprise"
+      ],
+      "trial_days": 0,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/chaos_engine-v1.2.3/chaos_engine-v1.2.3.zip",
+      "package_hash": "20c30ba70e26357e054af98409f06f1f056d0f271729ba99dd6be5dd9146f1ef",
+      "file_size": 153818,
+      "category": "",
+      "tags": [],
+      "min_app_version": "0.63.0",
+      "depends_on": {},
+      "screenshots": [],
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/chaos_engine/README.md",
       "is_official": true,
       "developer_id": 0,
       "developer_org": ""
