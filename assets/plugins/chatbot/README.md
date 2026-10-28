@@ -6,7 +6,7 @@
 > handoff to a human ticket, and Telegram / LINE webhooks.
 
 - **Identifier:** `chatbot`
-- **Version:** 1.7.3
+- **Version:** 1.7.4
 - **Category:** ai_agent
 - **Menu group:** AI & Content → AI Advisor
 - **Min app version:** 0.10.0
