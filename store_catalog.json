@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T22:58:15.659837",
+  "updated_at": "2026-10-28T22:58:49.144298",
   "plugins": [
     {
       "identifier": "analytics",
@@ -621,7 +621,7 @@
       "identifier": "order_notify",
       "name": "Order Notifications",
       "description": "订单通知 — 下单/支付成功/发货/退款时自动发送站内信和邮件通知",
-      "version": "1.5.4",
+      "version": "1.5.5",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -638,9 +638,9 @@
         "minipro"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/order_notify-v1.5.4/order_notify-v1.5.4.zip",
-      "package_hash": "c75fc5eee72372c38d60ec6d8fd5f924b663672a993c83582d52b5d2b40488c4",
-      "file_size": 12028,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/order_notify-v1.5.5/order_notify-v1.5.5.zip",
+      "package_hash": "7b3423c0396ff75012953ecbfee0e83780250c87c41b30b04ef42f83fc19dc82",
+      "file_size": 12382,
       "category": "shop",
       "tags": [
         "notification",
