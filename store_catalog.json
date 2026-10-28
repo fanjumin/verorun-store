@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T01:23:06.517699",
+  "updated_at": "2026-10-28T01:23:53.037672",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1185,7 +1185,7 @@
       "identifier": "cogevolution_substrate",
       "name": "Evolution Core",
       "description": "Industrial data-flywheel evolution substrate: memory curation, reflexion and controlled improvement for AI agents.",
-      "version": "1.2.0",
+      "version": "1.5.0",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -1194,11 +1194,17 @@
       "price_interval": "onetime",
       "price_quarter_fen": 0,
       "price_year_fen": 0,
-      "compatible_editions": [],
+      "compatible_editions": [
+        "enterprise",
+        "standard",
+        "pro",
+        "minipro",
+        "edge"
+      ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/cogevolution_substrate-v1.2.0/cogevolution_substrate-v1.2.0.zip",
-      "package_hash": "955a2988c99d5148ac767358e3a4fc896639d16aeb4e716acfec56a9f9df0f03",
-      "file_size": 39017,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/cogevolution_substrate-v1.5.0/cogevolution_substrate-v1.5.0.zip",
+      "package_hash": "f53fd2e9ee64c81e23424c15f4632b63c2e9e77ba1f4f2139f1188c62854cd3d",
+      "file_size": 67095,
       "category": "ai_agent",
       "tags": [
         "ml",
