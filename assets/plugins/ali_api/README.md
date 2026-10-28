@@ -1,151 +1,163 @@
-# ali_api (1688 Supply Chain Sourcing)
+# 1688 Supply Chain (`ali_api`)
 
-## Overview
+> 1688.com product sourcing. Keyword / image search, AI-rewritten titles
+> and descriptions, multi-image management, one-click publish into the local
+> VeroRun shop, OAuth token management, Redis cache, per-operator rate
+> limiting, and purchase-order tracking.
 
-The **ali_api** plugin integrates the 1688 (Alibaba China) wholesale marketplace into the VeroRun platform. It enables merchants to search for products on 1688, apply AI-powered optimization to listings, and publish them to local marketplaces. The plugin also automates purchase order creation when orders are paid, streamlining the dropshipping and sourcing workflow.
-
-The plugin manages its own independent SQLite database (`ali_api.db`) and includes a comprehensive service layer with caching, rate limiting, image search, and review capabilities.
-
-| Property    | Value                    |
-|-------------|--------------------------|
-| Identifier  | `ali_api`                |
-| Version     | 2.1.0                    |
-| Database    | `ali_api.db`             |
-| Menu Group  | Business Center          |
-| Embed URL   | `/admin/ali-api/`        |
-
----
-
-## Features
-
-- **1688 Product Search** -- Search the 1688 marketplace by keyword, category, or image with full product details.
-- **AI-Powered Optimization** -- Automatically optimize product titles, descriptions, and images for local marketplaces using AI.
-- **Local Marketplace Publishing** -- Push optimized products directly to the VeroRun storefront.
-- **Auto Purchase Order Creation** -- Listens to the `ORDER_PAID` event and automatically creates corresponding purchase orders on 1688.
-- **Image Search** -- Reverse image search on 1688 to find identical or similar products.
-- **Caching & Rate Limiting** -- Built-in caching layer and rate limiter to prevent API abuse and improve performance.
-- **Review Service** -- Manage and moderate product reviews from sourced items.
+- **Identifier:** `ali_api`
+- **Version:** 2.5.6
+- **Category:** supply_chain
+- **Menu group:** Business Center → 1688 Supply Chain
+- **Min app version:** 0.10.0
+- **Compatible editions:** enterprise, standard, pro, finance, minipro
+- **Agent role:** `business`
+- **Python deps:** `openai`, `redis`
 
 ---
 
-## Architecture
+## Core Features
 
-The plugin follows a service-oriented architecture with a clear separation of concerns:
+### 1. 1688 OpenAPI client
+- `services/alibaba_client.py` (16.1 KB) — legacy OpenAPI client.
+- `services/alibaba_client_v2.py` (9.7 KB) — v2 product detail
+  (`/v2/products/<id>`).
+- Default gateway `https://gw.open.1688.com/openapi`, configurable.
+- Full OAuth flow: `/oauth/url` → `/oauth/callback` → `/oauth/status` →
+  `/oauth/refresh` → `/oauth/disconnect`.
 
-```
-ali_api/
-  __init__.py              -- Plugin entry point (AliApiPlugin)
-  models.py                -- Data layer (ORM models, init_ali_api_db)
-  routes/
-    admin.py               -- Admin routes (ali_admin_bp)
-  services/
-    alibaba_client.py      -- 1688 API client (v1)
-    alibaba_client_v2.py   -- 1688 API client (v2, enhanced)
-    ai_processor.py        -- AI product optimization engine
-    image_search_service.py -- Reverse image search logic
-    cache_service.py       -- Response caching layer
-    rate_limiter.py        -- API rate limiting
-    review_service.py      -- Product review management
-```
+### 2. Product search & collection
+- **Keyword search**: `POST /items/search` (line 477).
+- **Image search**: `services/image_search_service.py` (5.3 KB).
+- **Collect**: `POST /items/collect` (line 339) — pulls a 1688 item into
+  `ali_api_items`.
+- **Product detail**: `GET /v2/products/<product_id>` (line 1699) — v2 API.
 
-**Data Flow:**
-1. Merchants search 1688 via the admin interface.
-2. The `alibaba_client` queries the 1688 API (rate-limited and cached).
-3. Results are displayed in the embedded admin panel.
-4. AI processor optimizes selected product listings.
-5. Optimized products are published to the local storefront.
-6. When an order is paid, the plugin auto-creates a purchase order on 1688.
+### 3. AI copywriting
+- `services/ai_processor.py` (16.9 KB) — calls OpenAI to rewrite title /
+  description.
+- `POST /items/<id>/ai-optimize` (line 566) — one-shot full optimization.
+- `POST /items/<id>/ai-titles` (line 629) — generate candidate titles.
+- `POST /items/<id>/select-title` (line 675) — pick a candidate.
+- Agent prompt: `agents/supply_chain_prompt.md`.
 
----
+### 4. Image management
+- `GET /items/<id>/images` (line 892)
+- `POST /items/<id>/images/upload` (line 927) — upload local image to
+  replace 1688 image.
+- `DELETE /items/<id>/images/<idx>` (line 1004)
+- `POST /items/<id>/images/reorder` (line 1052)
 
-## Directory Structure
+### 5. Publish to local shop
+- `POST /items/<id>/publish` (line 707) — one-click publish to VeroRun
+  local `shop` plugin.
+- `POST /items/<id>/unpublish` (line 851) — unpublish.
 
-```
-plugins/ali_api/
-  __init__.py
-  models.py
-  routes/
-    admin.py
-  services/
-    alibaba_client.py
-    alibaba_client_v2.py
-    ai_processor.py
-    image_search_service.py
-    cache_service.py
-    rate_limiter.py
-    review_service.py
-  README.en.md
-```
+### 6. Purchase orders
+- `GET /orders/supplier` (line 1784) — supplier orders.
+- `POST /orders/create-purchase` (line 1839) — place purchase order.
+- `POST /orders/sync-tracking` (line 1945) — sync tracking.
 
----
+### 7. Cache & rate limit
+- `services/cache_service.py` (13.2 KB) — Redis cache for 1688 responses.
+- `services/rate_limiter.py` (15.9 KB) — per-operator rate limit.
+- `GET /cache/stats`, `POST /cache/clear`, `GET /rate-limit/stats`.
 
-## Installation & Activation
-
-1. Ensure the `ali_api/` directory is present under `plugins/`.
-2. The plugin is auto-discovered by the VeroRun plugin loader.
-3. Verify activation in the admin panel under **Plugins**.
-4. The database `ali_api.db` is automatically initialized on first load.
-5. Configure 1688 API credentials in the plugin settings.
-
-No additional system dependencies are required beyond the core VeroRun platform.
+### 8. Review & logs
+- `services/review_service.py` (4.8 KB) — product review.
+- `GET /logs` (line 1167) — API call log.
+- `ali_api_logs` table + `ali_api_user_stats` table.
 
 ---
 
-## Configuration
+## At a glance
 
-Configuration is managed through the plugin settings panel. Required credentials for the 1688 API must be provided:
+| Area | Value |
+|---|---|
+| Storage | PG schema `ali_api`, **10 tables** (see below) |
+| Blueprint | `/admin/ali-api` (`routes/admin.py`, 76.9 KB) |
+| Admin endpoints | **34** (see below) |
+| Frontend | `templates/admin_ali_api.html` (63 KB) + `templates/ali_admin/index.html` (22 KB) + `static/ali_console.js` (36 KB) |
+| Python deps | `openai`, `redis` |
+| Permissions | `network:request`, `api:write` |
+| Capabilities | `product.search`, `product.rewrite`, `product.publish` |
+| Dashboard | `total_items`, `published_today`, `api_calls_24h` |
 
-| Key                  | Type   | Required | Description                            |
-|----------------------|--------|----------|----------------------------------------|
-| `alibaba_app_key`    | string | Yes      | 1688 Open Platform application key     |
-| `alibaba_app_secret` | string | Yes      | 1688 Open Platform application secret  |
-| `alibaba_access_token` | string | Yes    | 1688 OAuth access token                |
+### 10 tables
 
-Additional configuration options for rate limiting and caching are available in the service modules.
+| Table | Purpose |
+|---|---|
+| `ali_api_items` | Collected items (1688 raw fields + local optimized copy) |
+| `ali_api_reviews` | Product review records |
+| `ali_api_logs` | 1688 OpenAPI call log |
+| `ali_api_user_stats` | Per-operator stats |
+| `ali_api_tokens` | OAuth token (encrypted) |
+| `ali_oauth_states` | OAuth CSRF state |
+| `ali_api_config` | Plugin config (gateway URL, etc.) |
+| `ali_purchase_orders` | Purchase orders |
+| `agent_registry` | Agent registry |
+| `schema_meta` | Schema metadata |
+
+### 34 HTTP endpoints (grouped)
+
+**Pages / static**
+- `GET /`, `GET /dashboard`, `GET /items`, `GET /items/<id>`
+- `GET /uploads/<path:filename>`, `GET /csrf-token`
+
+**Search / collect**
+- `POST /items/search`
+- `POST /items/collect`
+- `GET /v2/products/<product_id>`
+
+**AI optimization**
+- `POST /items/<id>/ai-optimize`
+- `POST /items/<id>/ai-titles`
+- `POST /items/<id>/select-title`
+
+**Images**
+- `GET /items/<id>/images`
+- `POST /items/<id>/images/upload`
+- `DELETE /items/<id>/images/<idx>`
+- `POST /items/<id>/images/reorder`
+
+**Publish**
+- `POST /items/<id>/publish`
+- `POST /items/<id>/unpublish`
+
+**Purchase orders**
+- `GET /orders/supplier`
+- `POST /orders/create-purchase`
+- `POST /orders/sync-tracking`
+
+**OAuth**
+- `GET /oauth/url`, `GET|POST /oauth/callback`, `GET /oauth/status`
+- `POST /oauth/refresh`, `POST /oauth/disconnect`
+
+**Ops**
+- `GET /cache/stats`, `POST /cache/clear`
+- `GET /rate-limit/stats`
+- `GET /logs`
+- `GET /config` / `POST /config`
+- `GET /settings` / `POST /settings`
 
 ---
 
-## API Endpoints & Hooks
+## Five-minute quick start
 
-### Hooks Listened
-
-| Hook          | Description                                                 |
-|---------------|-------------------------------------------------------------|
-| `ORDER_PAID`  | Triggers automatic purchase order creation on 1688          |
-
-### Hooks Provided
-
-This plugin does not provide hooks for external consumption. All functionality is exposed via admin routes and the embedded panel.
-
-### Admin Routes
-
-- `GET  /admin/ali-api/` -- Embedded admin panel (search, product management)
-- `POST /admin/ali-api/search` -- Search 1688 products
-- `POST /admin/ali-api/optimize` -- AI-optimize a product listing
-- `POST /admin/ali-api/publish` -- Publish optimized product to storefront
-- `POST /admin/ali-api/image-search` -- Reverse image search on 1688
+1. Enable — runs migration `v0.0.0_to_v2.1.0.sql` (10 tables).
+2. Open **Business Center → 1688 Supply Chain**.
+3. Click **OAuth authorize** → redirect to 1688 → callback →
+   `/oauth/status` shows connected.
+4. **Search** → **Collect** → item lands in list.
+5. **AI optimize** → pick title → manage images → **Publish** to local shop.
 
 ---
 
-## Dependencies
+## Documents
 
-This plugin has no external third-party Python dependencies. It relies on:
-
-- VeroRun core (hook system, plugin loader, template engine)
-- SQLite (via VeroRun's database abstraction layer)
-- 1688 Open Platform API (external HTTP service)
-
----
-
-## Permissions
-
-| Permission             | Description                              |
-|------------------------|------------------------------------------|
-| `network.request`      | Make outbound HTTP requests to 1688 API  |
-| `shop.product.write`   | Create and publish products to the store |
-
----
-
-## License
-
-This plugin is part of the VeroRun platform and is distributed under the same license as the core platform.
+| Document | Audience | Location |
+|---|---|---|
+| This file | End user / integrator | `README.md` |
+| Technical whitepaper | Backend / e-commerce engineers | [`docs/whitepaper.md`](docs/whitepaper.md) |
+| User guide / operation manual | Merchandisers / ops | [`docs/user-guide.md`](docs/user-guide.md) |
+| Changelog | All | [`CHANGELOG.md`](CHANGELOG.md) |
