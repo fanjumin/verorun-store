@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T01:36:18.818138",
+  "updated_at": "2026-10-28T01:48:53.257537",
   "plugins": [
     {
       "identifier": "analytics",
@@ -795,7 +795,7 @@
       "identifier": "site_builder",
       "name": "AI Site Builder",
       "description": "LLM-driven website builder: prompt templates, site tasks & unified design tokens (decoupled from core, dedicated schema in main DB)",
-      "version": "2.12.0",
+      "version": "2.13.0",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -811,9 +811,9 @@
         "minipro"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/site_builder-v2.12.0/site_builder-v2.12.0.zip",
-      "package_hash": "a010ceeee0def81fcf50b79defaa6364a4506f12577c24d9c3f98c097ab1363a",
-      "file_size": 668329,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/site_builder-v2.13.0/site_builder-v2.13.0.zip",
+      "package_hash": "563579f516d313b1955308223cae3bfa4b6d19e88c40d6d9d061bec90032928d",
+      "file_size": 671334,
       "category": "content",
       "tags": [
         "site-builder",
