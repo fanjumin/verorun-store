@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T22:58:49.144298",
+  "updated_at": "2026-10-28T22:59:19.876994",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1856,7 +1856,7 @@
       "identifier": "search_hub",
       "name": "Search Hub",
       "description": "通用检索接入层，归一化外部搜索能力为 EvidenceBundle",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -1873,9 +1873,9 @@
         "pro"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/search_hub-v1.0.0/search_hub-v1.0.0.zip",
-      "package_hash": "6ec8666e10144b0f24d20e25fb7c060bb6139c18473c9a80230752ef0f64e67b",
-      "file_size": 178223,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/search_hub-v1.0.1/search_hub-v1.0.1.zip",
+      "package_hash": "a3c161d67aa731581aa2685ba190c37b4f4e67f432e7fa464f2b89d1d24fa0f1",
+      "file_size": 179426,
       "category": "ai_agent",
       "tags": [],
       "min_app_version": "0.63.0",
