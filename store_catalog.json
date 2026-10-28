@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T22:47:45.001922",
+  "updated_at": "2026-10-28T22:48:14.224429",
   "plugins": [
     {
       "identifier": "analytics",
@@ -190,7 +190,7 @@
       "identifier": "content_factory",
       "name": "Content Factory",
       "description": "Content Factory — Multi-source content collection, AI processing, review workflow, publishing, skill push, and static page generation",
-      "version": "1.8.2",
+      "version": "1.8.3",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -207,9 +207,9 @@
         "minipro"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/content_factory-v1.8.2/content_factory-v1.8.2.zip",
-      "package_hash": "200827b032769db24d006fa922ebc94af75d62d1af597f937822dff657784c48",
-      "file_size": 84273,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/content_factory-v1.8.3/content_factory-v1.8.3.zip",
+      "package_hash": "f762a2c6e182329c38b829bac7a4a9000bdb7ff188d7b5070f825b0b95769d54",
+      "file_size": 86084,
       "category": "content",
       "tags": [
         "content",
