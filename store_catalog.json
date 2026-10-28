@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T22:55:05.333010",
+  "updated_at": "2026-10-28T22:55:37.376501",
   "plugins": [
     {
       "identifier": "analytics",
@@ -350,7 +350,7 @@
       "identifier": "enterprise_verify",
       "name": "Enterprise Verification",
       "description": "Enterprise Verification — OCR business license recognition + AI auto-audit",
-      "version": "1.5.3",
+      "version": "1.5.4",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -367,9 +367,9 @@
         "minipro"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/enterprise_verify-v1.5.3/enterprise_verify-v1.5.3.zip",
-      "package_hash": "dd9269c0ff6722decb24c8009152d0dc8139823b821e6e98167be47f56ace87d",
-      "file_size": 22215,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/enterprise_verify-v1.5.4/enterprise_verify-v1.5.4.zip",
+      "package_hash": "afe6f7a68b5878bee814e2085cc6745f31aa756d9c13d0520e98844f1fb8ba2a",
+      "file_size": 25627,
       "category": "system",
       "tags": [
         "verification",
@@ -381,7 +381,7 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "",
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/enterprise_verify/README.md",
       "is_official": true,
       "developer_id": 0,
       "developer_org": ""
