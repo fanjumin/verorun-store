@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T07:50:54.434856",
+  "updated_at": "2026-10-28T08:09:16.937195",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1208,7 +1208,7 @@
       "identifier": "stock_analysis",
       "name": "Stock Analysis",
       "description": "A-share multi-dimensional stock analysis with technical, fundamental, sentiment and AI-assisted research.",
-      "version": "2.3.5",
+      "version": "2.3.6",
       "author": "easykai",
       "author_url": "",
       "icon_url": "",
@@ -1221,9 +1221,9 @@
         "finance"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/stock_analysis-v2.3.5/stock_analysis-v2.3.5.zip",
-      "package_hash": "e6b07e06970c2424738e298c59e9d7d0950e3b1380db2358c1f797e650abdb11",
-      "file_size": 481912,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/stock_analysis-v2.3.6/stock_analysis-v2.3.6.zip",
+      "package_hash": "448cabe9ff1b0b210496c5c1d41beeca812c4b33b627b465bfeaa9b7cc581f44",
+      "file_size": 483984,
       "category": "ai_agent",
       "tags": [
         "finance",
