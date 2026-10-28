@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T22:56:39.124949",
+  "updated_at": "2026-10-28T22:57:11.063997",
   "plugins": [
     {
       "identifier": "analytics",
@@ -503,7 +503,7 @@
       "identifier": "memory_engine",
       "name": "CogEvolution",
       "description": "Hierarchical agent memory with vector retrieval, Reflexion-based self-evolution and prompt metrics.",
-      "version": "1.8.0",
+      "version": "1.8.1",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -518,12 +518,13 @@
         "pro",
         "finance",
         "research",
-        "minipro"
+        "minipro",
+        "omni-service"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/memory_engine-v1.8.0/memory_engine-v1.8.0.zip",
-      "package_hash": "7c41347e622c4fe9ede8121131ccd820818147263e43938c1f3c44143cab747b",
-      "file_size": 71956,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/memory_engine-v1.8.1/memory_engine-v1.8.1.zip",
+      "package_hash": "f260e8a3eff6c4b94781fb61e63b4c5e9ab1160fb1200d5bf25a741f57e5f560",
+      "file_size": 75665,
       "category": "system",
       "tags": [
         "memory",
