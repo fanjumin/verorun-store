@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T10:02:02.630826",
+  "updated_at": "2026-10-28T10:45:07.917528",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1738,7 +1738,7 @@
       "identifier": "omni_service",
       "name": "Omni Service",
       "description": "Omnichannel customer service inbox: normalize inbound messages from WeCom / WeChat KF / mini-program / Feishu / DingTalk / Telegram / Line / Slack / Discord / QQ into one local conversation model, route AI first line through the chatbot engine, and hand off to human agents with a channel-aware console. Commercial add-on; version composition is driven by bundles, not editions.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -1752,9 +1752,9 @@
         "omni-service"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/omni_service-v1.0.0/omni_service-v1.0.0.zip",
-      "package_hash": "d124a6dc81ab50a04c8390f790e9df1ed5b8e2c87d087c3bfb80de835e442ce2",
-      "file_size": 233251,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/omni_service-v1.0.1/omni_service-v1.0.1.zip",
+      "package_hash": "274db7150d1fb3090f89f0e6e1fef9eebd31f7cf3dcc91b2524b57399fd4509f",
+      "file_size": 236873,
       "category": "system",
       "tags": [
         "omnichannel",
