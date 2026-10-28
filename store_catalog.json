@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T22:56:08.733803",
+  "updated_at": "2026-10-28T22:56:39.124949",
   "plugins": [
     {
       "identifier": "analytics",
@@ -428,7 +428,7 @@
       "identifier": "im_gateway",
       "name": "通讯频道",
       "description": "Channels — Unified instant-messaging channel gateway: outbound messaging for Feishu / WeCom / Telegram / LINE / Slack / Discord / DingTalk / QQ, signed inbound webhooks (fail-closed), plus web third-party login",
-      "version": "3.2.0",
+      "version": "3.2.1",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -446,9 +446,9 @@
         "omni-service"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/im_gateway-v3.2.0/im_gateway-v3.2.0.zip",
-      "package_hash": "60ad17da5b695d6a34863b4452c5be33626a6fabb0be750cb634ac265f528eb7",
-      "file_size": 87232,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/im_gateway-v3.2.1/im_gateway-v3.2.1.zip",
+      "package_hash": "f53941a0b152231a13fd44a42bd0bd1834bcd04ec8a6db3360760cf697b4d750",
+      "file_size": 87788,
       "category": "system",
       "tags": [
         "im",
