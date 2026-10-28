@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T22:54:28.646487",
+  "updated_at": "2026-10-28T22:55:05.333010",
   "plugins": [
     {
       "identifier": "analytics",
@@ -270,7 +270,7 @@
       "identifier": "currency_converter",
       "name": "Currency Converter",
       "description": "Currency Converter — Multi-currency display with real-time exchange rates, user preference, and automatic price conversion",
-      "version": "1.5.4",
+      "version": "1.5.5",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -279,11 +279,17 @@
       "price_interval": "onetime",
       "price_quarter_fen": 0,
       "price_year_fen": 0,
-      "compatible_editions": [],
+      "compatible_editions": [
+        "enterprise",
+        "standard",
+        "pro",
+        "finance",
+        "minipro"
+      ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/currency_converter-v1.5.4/currency_converter-v1.5.4.zip",
-      "package_hash": "877f8311bcd5a3a43be15da5c28b8ced2ef119e189b8407dc27a4c5f274b9e0c",
-      "file_size": 29364,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/currency_converter-v1.5.5/currency_converter-v1.5.5.zip",
+      "package_hash": "e782ba126ca1bf8d3746a92d18e164d20a59d4d426360f69c4fbba85235402f8",
+      "file_size": 32543,
       "category": "shop",
       "tags": [
         "currency",
@@ -294,7 +300,7 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "",
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/currency_converter/README.md",
       "is_official": true,
       "developer_id": 0,
       "developer_org": ""
