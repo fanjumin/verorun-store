@@ -5,7 +5,7 @@
 > dashboard.
 
 - **Identifier:** `neural_flow`
-- **Version:** 1.1.0
+- **Version:** 1.2.2
 - **Category:** ai_agent
 - **Min app version:** 0.10.0
 - **Agent role:** `ops`
