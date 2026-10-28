@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T05:38:07.143257",
+  "updated_at": "2026-10-28T05:51:21.329768",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1810,7 +1810,7 @@
       "identifier": "net_proxy",
       "name": "Net Proxy",
       "description": "Net Proxy — Unified outbound network proxy & egress governance for plugins",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -1827,9 +1827,9 @@
         "minipro"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/net_proxy-v1.0.1/net_proxy-v1.0.1.zip",
-      "package_hash": "5534c66a4eabef389e682be3026a9c48315fcf559a0348dcdd3e2cbc5b94dc94",
-      "file_size": 71946,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/net_proxy-v1.0.2/net_proxy-v1.0.2.zip",
+      "package_hash": "1bdbd469f5d5882c47312f88a9072003234261198c924b50570793ac856a1956",
+      "file_size": 73682,
       "category": "tools",
       "tags": [
         "network",
