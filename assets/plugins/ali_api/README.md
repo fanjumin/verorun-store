@@ -6,7 +6,7 @@
 > limiting, and purchase-order tracking.
 
 - **Identifier:** `ali_api`
-- **Version:** 2.5.6
+- **Version:** 2.5.7
 - **Category:** supply_chain
 - **Menu group:** Business Center → 1688 Supply Chain
 - **Min app version:** 0.10.0
