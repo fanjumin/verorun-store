@@ -5,7 +5,7 @@
 > connectivity probing, and request logging.
 
 - **Identifier:** `net_proxy`
-- **Version:** 1.0.0
+- **Version:** 1.0.1
 - **Category:** tools
 - **Menu group:** System → Net Proxy
 - **Min app version:** 0.10.0
