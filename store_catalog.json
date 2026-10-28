@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T01:25:00.916906",
+  "updated_at": "2026-10-28T01:25:43.890798",
   "plugins": [
     {
       "identifier": "analytics",
@@ -297,7 +297,7 @@
       "identifier": "email",
       "name": "Email Service",
       "description": "Email Service — SMTP/IMAP email client with inbox, compose, attachments, and contact management",
-      "version": "1.7.0",
+      "version": "1.8.1",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -312,12 +312,13 @@
         "pro",
         "finance",
         "research",
-        "minipro"
+        "minipro",
+        "omni-service"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/email-v1.7.0/email-v1.7.0.zip",
-      "package_hash": "9472a0a77ab8f9ee2f1a388fe74f48fa10999357eb32e0659a1cc5de81de2358",
-      "file_size": 44482,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/email-v1.8.1/email-v1.8.1.zip",
+      "package_hash": "178b3da152bef3efa43a4b33788213e93bcaf2479f4907ffa965f69b46f3a7a8",
+      "file_size": 67062,
       "category": "system",
       "tags": [
         "email",
@@ -328,7 +329,7 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "",
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/email/README.md",
       "is_official": true,
       "developer_id": 0,
       "developer_org": ""
