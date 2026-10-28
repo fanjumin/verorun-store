@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T01:30:28.102684",
+  "updated_at": "2026-10-28T01:31:10.956665",
   "plugins": [
     {
       "identifier": "analytics",
@@ -608,7 +608,7 @@
       "identifier": "order_notify",
       "name": "Order Notifications",
       "description": "订单通知 — 下单/支付成功/发货/退款时自动发送站内信和邮件通知",
-      "version": "1.5.3",
+      "version": "1.5.4",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -617,11 +617,17 @@
       "price_interval": "onetime",
       "price_quarter_fen": 0,
       "price_year_fen": 0,
-      "compatible_editions": [],
+      "compatible_editions": [
+        "enterprise",
+        "standard",
+        "pro",
+        "finance",
+        "minipro"
+      ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/order_notify-v1.5.3/order_notify-v1.5.3.zip",
-      "package_hash": "ef64a6b1a7500fb70ccea05540b4243432775948bb0ccd32170a1fdc65f41612",
-      "file_size": 9858,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/order_notify-v1.5.4/order_notify-v1.5.4.zip",
+      "package_hash": "c75fc5eee72372c38d60ec6d8fd5f924b663672a993c83582d52b5d2b40488c4",
+      "file_size": 12028,
       "category": "shop",
       "tags": [
         "notification",
@@ -630,7 +636,7 @@
       "min_app_version": "0.10.0",
       "depends_on": {},
       "screenshots": [],
-      "readme_url": "",
+      "readme_url": "https://cdn.jsdelivr.net/gh/fanjumin/verorun-store@main/assets/plugins/order_notify/README.md",
       "is_official": true,
       "developer_id": 0,
       "developer_org": ""
