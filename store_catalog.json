@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-10-28T22:55:37.376501",
+  "updated_at": "2026-10-28T22:56:08.733803",
   "plugins": [
     {
       "identifier": "analytics",
@@ -1363,7 +1363,7 @@
       "identifier": "hr_recruit",
       "name": "HR Recruit",
       "description": "Recruitment copilot — JD drafting with bias review, resume structuring, talent pool retrieval, interview coordination and retention-based PII destruction. Advisory only, fully auditable.",
-      "version": "1.3.4",
+      "version": "1.3.5",
       "author": "VeroRun",
       "author_url": "",
       "icon_url": "",
@@ -1378,9 +1378,9 @@
         "finance"
       ],
       "trial_days": 0,
-      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/hr_recruit-v1.3.4/hr_recruit-v1.3.4.zip",
-      "package_hash": "1e444947217a672d7c18823d72b80a90a1edc8ad1e48677aa098add0d14c4d03",
-      "file_size": 163004,
+      "download_url": "https://github.com/fanjumin/verorun-store/releases/download/hr_recruit-v1.3.5/hr_recruit-v1.3.5.zip",
+      "package_hash": "4417486f6ea6ba083a211799ef5478e4912b490c0ac5796f04be04659e1f0834",
+      "file_size": 165495,
       "category": "ai_agent",
       "tags": [
         "HR",
