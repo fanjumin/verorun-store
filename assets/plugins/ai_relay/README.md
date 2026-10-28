@@ -1,220 +1,165 @@
 # AI Relay Station (`ai_relay`)
 
-OpenAI-compatible AI model relay plugin for VeroRun: multi-provider channel
-routing, per-token authentication, credit billing, rate limiting, and an
-admin console — all inside one plugin schema (`ai_relay`) without touching
-the system core.
+> OpenAI-compatible AI model gateway. Multi-channel routing (OpenAI /
+> Anthropic / Gemini / OpenAI-compatible), per-user API tokens, credit
+> metering & billing, rate limits, content safety, region policy,
+> speed-tier pricing, and observability.
 
-- Version: **1.4.1**
-- External contract: OpenAI REST/SSE only (`/v1/*`)
-- Storage: dedicated PostgreSQL schema, shared connection pool
-  (`plugins/_base/db`), no standalone database
+- **Identifier:** `ai_relay`
+- **Version:** 1.5.1
+- **Category:** ai_agent
+- **Menu group:** Business Center → Relay Channels / API Tokens / Usage & Billing
+- **Min app version:** 0.10.0
+- **Compatible editions:** enterprise, standard, pro
+- **Agent role:** `ops`
+- **Depends on:** `payment >= 1.0.0`
+- **Python deps:** `httpx`, `tiktoken`, `cryptography`; optional `anthropic`
 
-[中文文档](./README.zh-CN.md)
+---
 
-## Features
+## Core Features
 
-- **OpenAI-compatible gateway**: chat/completions (stream + non-stream),
-  models, embeddings, images/generations, rerank, audio/transcriptions.
-- **Protocol adapters**: OpenAI-compatible, Anthropic, Gemini — upstream
-  responses and SSE streams are normalized to the OpenAI shape; clients
-  always see one contract.
-- **Multi-channel routing**: priority tiers, region affinity (`cn`/`os`),
-  weighted random within a tier, automatic retry on the next channel for
-  upstream 429/5xx/timeouts.
-- **Key pool per channel**: weighted key pickup, health score, cooldown and
-  circuit breaker (PostgreSQL authoritative + in-process fast path).
-- **Token authentication**: `sk-vr-` tokens stored as SHA-256 only, optional
-  IP whitelist, short-lived auth cache, per-IP brute-force protection.
-- **Per-token credit quota (1.4.0)**: `quota_credits` caps the cumulative
-  `cost_credits` a single token can consume (`-1` = unlimited, the default);
-  usage aggregates live from `relay_usage_logs` (index `ix_relay_usage_token`)
-  and an over-budget token is rejected with 402.
-- **Three-layer authorization**: token allow-list × user group allow-list ×
-  industry-plan entitlements (union semantics).
-- **Dual-unit billing**: credits (charged to users) + fen (upstream cost),
-  BIGINT everywhere, priced **per 1M tokens** (sub-fen precision since 1.3.0),
-  atomic credit freeze before forwarding and guaranteed settlement in `finally`
-  (stream disconnects included).
-- **Rate limiting**: sliding-window RPM/TPM/concurrency at token/user/group/
-  ip scope, plus **channel-scope aggregate limits (1.2.0)** that throttle all
-  users sharing one upstream account before traffic reaches the provider.
-- **Metering fallback chain**: upstream usage → tiktoken → heuristic.
-- **Finance operations**: recharge orders with idempotent payment callbacks,
-  manual credit grants, ledger, usage logs, daily aggregation, stale-freeze
-  reconciliation, monthly plan grants.
-- **User self-service**: end users can check balance, create recharge orders
-  and manage their own API tokens from the user center via
-  `/plugin/ai_relay/api/*` (valid user JWT only, no admin rights).
-- **SSRF protection**: scheme allow-list, full DNS resolution checks with
-  IPv4-mapped IPv6 normalization, reuses `net_proxy` block lists when
-  available, fails closed; private upstreams require explicit opt-in.
-- **Upstream credential encryption**: Fernet derived from `ENCRYPTION_KEY`,
-  fail-closed (a relay that cannot encrypt keys will not store or send them).
+`ai_relay` is the platform's LLM gateway. Clients hit `/v1/...` with a
+VeroRun-issued token; the plugin authenticates, freezes credits, routes to a
+healthy upstream channel, streams the response, and settles the bill.
 
-## Request lifecycle
+### 1. Multi-channel routing (3 adapters)
+- `adapters/openai_compat.py` — any OpenAI-compatible upstream.
+- `adapters/anthropic.py` (11.9 KB) — Claude native protocol (SSE).
+- `adapters/gemini.py` (8.2 KB) — Google Gemini.
+- `relay/router.py` (4.8 KB) — health + weighted routing.
+- `relay/channel_ratelimit.py` (3.9 KB) — channel-level RPM/TPM.
 
-```
-client ──> auth (token + brute-force guard)
-        ──> authorize (token / group / industry plan)
-        ──> rate limit (token/user/group/ip sliding window)
-        ──> freeze credits (single atomic UPDATE)
-        ──> pick channel ── SSRF validation ── channel gate (1.2.0)
-        ──> pick key ──> forward (retry ≤ max_retry_per_request channels)
-        ──> finally: settle (ledger + usage log + daily stats + freeze state)
-```
+### 2. Six OpenAI-compatible endpoints
+- `GET /v1/models`
+- `POST /v1/chat/completions` (incl. SSE streaming)
+- `POST /v1/embeddings`
+- `POST /v1/images/generations`
+- `POST /v1/rerank`
+- `POST /v1/audio/transcriptions` (≤25 MB)
 
-## Directory layout
+### 3. Two-phase credit metering
+- **Pre-request freeze**: `relay/metering.py` + `relay/credits.py`,
+  estimated at `est_max_output=4096`; recorded in
+  `relay_requests_freeze`.
+- **Post-request settle**: `relay/settle.py` (10.8 KB) reconciles by
+  real token count.
+- **Negative-balance trip**: `negative_trip_credits` threshold disables
+  the offending token immediately.
+- **Recharge**: `relay/recharge.py` (9 KB), `credits_per_fen=10`
+  (1 fen = 10 credits), routed through `payment`.
 
-- [`routes_gateway.py`](./routes_gateway.py) — external `/v1/*` blueprint
-- [`routes_admin.py`](./routes_admin.py) — admin/user API under
-  `/plugin/ai_relay/admin/*` and `/api/*`
-- [`models.py`](./models.py) — schema lifecycle (advisory-lock migrations)
-  and shared queries
-- [`relay/`](./relay) — `auth`, `authorize`, `ratelimit`,
-  `channel_ratelimit`, `balance`, `router`, `keys`, `upstream`, `metering`,
-  `credits`, `settle`, `recharge`, `entitlements`, `benchmark`
-- [`adapters/`](./adapters) — `openai_compat`, `anthropic`, `gemini`
-- [`migrations/`](./migrations) — `v1.0.0` init (19 tables),
-  `v1.1.0` observability, `v1.2.0` channel rate limiting,
-  `v1.3.0` per-1M pricing precision, `v1.4.0` per-token quota
-- [`scheduler.py`](./scheduler.py) — idempotent APScheduler jobs
-- [`templates/relay_admin.html`](./templates/relay_admin.html) — admin panel
-  partial (loaded via the admin dashboard)
-- [`i18n/`](./i18n) — `en.yml` (identity) + `zh-CN.yml`, identical key sets
+### 4. Security & compliance
+- **Content safety**: `relay/content_safety.py` (6.6 KB) +
+  `content_words.json` keyword filter.
+- **Region policy**: `relay/region_policy.py` (8.4 KB, v1.5.0) —
+  allow/deny models and channels by region.
+- **Auth**: `relay/auth.py` (6.8 KB) + `relay/keys.py` (9.3 KB) —
+  token issue / verify / rotate.
+- **IP trust**: `trusted_proxy_hops` controls `X-Forwarded-For` depth.
+- **Private upstream audit**: `allow_private_upstream` default false.
 
-## Requirements
+### 5. Entitlements & quotas
+- `relay/authorize.py` — token-level model whitelist.
+- `relay/entitlements.py` (6.6 KB) — industry plans + bindings.
+- `relay/ratelimit.py` (7.1 KB) — per-user/channel RPM/TPM.
 
-- VeroRun host application (`min_app_version: 0.10.0`)
-- Python packages: `httpx`, `tiktoken` (accurate token counts); optional:
-  `anthropic` (native Anthropic adapter)
-- Environment variable **`ENCRYPTION_KEY`** (>= 16 characters). Upstream API
-  keys cannot be added until it is set.
+### 6. Speed-tier pricing
+- `relay_price_rules` table + `speed_factor_mode`:
+  - `congestion` (default): slower models cost more.
+  - `compensation`: slower models cost less.
+- `speed_factor_min_bp=5000` / `max_bp=20000` (basis points).
+- `relay/benchmark.py` (8.7 KB) + `scheduler.py` (16.1 KB) run
+  weekly speed benchmarks paid by `benchmark_user_id`.
 
-Migrations run automatically on plugin activation (`activate()`), guarded by
-a transaction advisory lock and a `schema_migrations` ledger; every migration
-is idempotent (`IF NOT EXISTS`).
+### 7. Observability
+- `relay_usage_logs` per-request, `relay_usage_daily` daily rollup.
+- `relay_ledger` credit ledger.
+- Dashboard: 24h requests / 24h tokens / 24h credits / 7d upstream
+  cost (fen) / active tokens.
 
-## Configuration
+---
 
-Manifest `config` keys (editable via plugin settings):
+## At a glance
 
-| Key | Default | Meaning |
+| Area | Value |
+|---|---|
+| Storage | PG schema `ai_relay`, **20 tables** (see below) |
+| Blueprints | `/v1` gateway (`routes_gateway.py`, 38.7 KB) + `/admin/relay` (`routes_admin.py`, 76.4 KB) |
+| Admin endpoints | **~55** (channels / models / groups / tokens / plans / billing) |
+| Gateway endpoints | 6 OpenAI-compatible |
+| Internal modules | 19 .py under `relay/` (auth, authorize, balance, benchmark, channel_ratelimit, content_safety, credits, entitlements, keys, metering, ratelimit, recharge, region_policy, router, settle, upstream, …) |
+| Python deps | `httpx`, `tiktoken`, `cryptography`; optional `anthropic` |
+| Permissions | `network:request`, `api:read`, `api:write`, `admin:access`, `routes`, `scheduler` |
+| Dashboard | 5 stats (see above) |
+
+### 20 tables
+
+| Table | Purpose |
+|---|---|
+| `relay_channels` | Upstream channels (OpenAI / Anthropic / Gemini / compat) |
+| `relay_channel_keys` | Per-channel multi-key (rotation / health) |
+| `relay_models` | Model catalog (price, context, speed tier) |
+| `relay_model_bindings` | Model ↔ channel bindings |
+| `relay_groups` | Token quota groups |
+| `relay_tokens` | Issued API tokens |
+| `relay_accounts` | User credit accounts |
+| `relay_ledger` | Credit ledger |
+| `relay_usage_logs` | Per-request log |
+| `relay_usage_daily` | Daily rollup |
+| `relay_rate_rules` | Rate-limit rules |
+| `relay_rate_events` | Rate-limit events |
+| `relay_price_rules` | Speed-tier pricing |
+| `relay_requests_freeze` | Pre-request freeze records |
+| `relay_recharge_orders` | Recharge orders |
+| `relay_grant_records` | Admin grants |
+| `relay_industry_plans` | Industry plans |
+| `relay_plan_bindings` | User ↔ plan bindings |
+| `relay_entitlements` | User entitlements |
+| `relay_channel_limits` | Channel RPM/TPM caps (v1.2.0) |
+
+### 11 capabilities
+
+`relay.chat`, `relay.embeddings`, `relay.rerank`, `relay.image`,
+`relay.audio`, `relay.channel.manage`, `relay.token.manage`,
+`relay.quota.query`, `relay.usage.report`, `relay.rate_limit`,
+`relay.entitlement.check`.
+
+### Key config (21 items, common subset)
+
+| Key | Default | Purpose |
 |---|---|---|
-| `upstream_connect_timeout` | 10 | Upstream connect timeout (seconds) |
-| `upstream_read_timeout` | 300 | Upstream read timeout, covers long SSE connections |
-| `max_retry_per_request` | 2 | Max channel retries per request |
-| `allow_private_upstream` | false | Allow channels pointing at private/reserved networks |
-| `log_prompt_preview` | false | Store a short prompt preview in usage logs |
-| `credits_per_fen` | 10 | Recharge exchange rate: 1 fen = N credits |
-| `ref_speed_tpm` | 3600 | Reference speed for the pricing factor |
-| `speed_alpha_pct` | 50 | Congestion exponent (basis points) |
-| `speed_factor_min_bp` | 5000 | Pricing factor floor |
-| `speed_factor_max_bp` | 20000 | Pricing factor ceiling |
-| `speed_factor_mode` | congestion | `congestion` or `compensation` |
+| `upstream_read_timeout` | 300 | Upstream read timeout (SSE long conn, seconds) |
+| `max_retry_per_request` | 2 | Max retries per request |
+| `est_max_output` | 4096 | Freeze estimate when client omits max_tokens |
+| `credits_per_fen` | 10 | 1 fen = N credits |
+| `max_recharge_fen` | 1000000 | Per-order recharge cap (fen, = 10k yuan) |
+| `max_audio_upload_bytes` | 26214400 | Audio upload cap (25 MB) |
+| `max_images_per_request` | 10 | Images per /v1/images/generations |
+| `negative_trip_credits` | 0 | Negative-balance trip threshold (0=off) |
+| `trusted_proxy_hops` | 0 | Reverse-proxy hop count (IP parsing) |
+| `allow_private_upstream` | false | Allow private-network upstream (audited) |
+| `log_prompt_preview` | false | Store prompt preview in logs (default hash-only) |
+| `speed_factor_mode` | congestion | congestion / compensation |
+| `benchmark_user_id` | 0 | Speed-benchmark payer account (0=off) |
 
-## Channel aggregate limits (1.2.0)
+---
 
-One upstream account is shared by every external user, so per-user limits
-cannot protect the provider. Configure a per-channel ceiling:
+## Five-minute quick start
 
-- Admin panel: **Relay Channels → channel row → Limits**
-- API:
+1. Enable — runs migrations v1.0.0 → v1.5.0 (6 SQL files).
+2. Open **Business Center → Relay Channels**.
+3. Add an upstream channel (e.g. OpenAI) with its key.
+4. **API Tokens** → issue a token for a user.
+5. Point the OpenAI client at `https://<host>/v1` with that token.
 
-```http
-GET    /plugin/ai_relay/admin/channels/{id}/limits
-PUT    /plugin/ai_relay/admin/channels/{id}/limits
-DELETE /plugin/ai_relay/admin/channels/{id}/limits
-```
+---
 
-```json
-{ "rpm": 600, "tpm": 200000, "concurrent": 8 }
-```
+## Documents
 
-`0` (or no row) means unlimited. When a channel is over its ceiling the
-request is retried on the next channel; if every channel is exhausted the
-client receives `502 upstream_error`. Gate failures fail open (billing stays
-fail-closed).
-
-## Scheduled jobs
-
-| Job | Schedule | Purpose |
+| Document | Audience | Location |
 |---|---|---|
-| `freeze_reconcile` | every 10 min | Settle/release stale frozen requests |
-| `daily_backfill` | 03:30 | Rebuild previous-day daily stats |
-| `rate_events_cleanup` | 04:00 | Delete rate events older than 7 days |
-| `usage_logs_cleanup` | 04:30 | Delete usage logs past the region retention window (CN 180d / OS 30d) |
-| `entitlement_expire` | 01:30 | Expire passed grants |
-| `orphan_cleanup` | 02:00 | Remove rows of deleted users |
-| `monthly_grant` | 1st 01:00 | Industry-plan monthly credit grants |
-| `speed_benchmark` | Mon 05:00 | Weekly speed measurement and price recompute |
-
-All jobs are idempotent (atomic UPDATE / unique UPSERT) and safe under
-multiple workers.
-
-## Security notes
-
-- Tokens are stored as SHA-256; plaintext is shown once at creation.
-- Upstream keys are Fernet-encrypted at rest and never logged.
-- Upstream error bodies are sanitized (base URL/host removed, `sk-` masked,
-  truncated) before being returned to clients.
-- Admin endpoints require a JWT with `is_admin`; user endpoints require a
-  valid user JWT. There is no fail-open path.
-- SSRF validation applies to every selected channel on every request, not
-  only at configuration time.
-
-## Current limitations (1.5.0)
-
-- Legacy `*_per_1k` pricing columns are retained but frozen for rollback
-  safety; billing, admin and `/v1/models` all use the `*_per_1m` columns
-  (new-preferred, legacy ×1000 fallback during the transition).
-- The speed benchmark enumerates candidates and recomputes prices, but actual
-  measurement (`_measure_one`) is not implemented yet; the speed factor stays
-  1.0 until then.
-- SSRF is validated before connecting, but the HTTP client does not yet pin
-  the verified IP at connection time (DNS rebinding hardening is planned).
-- Rate-limit check/insert is not transaction-serialized and fails open by
-  design; only billing is fail-closed.
-- Sensitive admin operations are logged to the application log; a structured
-  audit-trail table is planned.
-
-## Changelog
-
-- **1.5.0** — regional compliance convergence (CN vs. OS). The deployment-level
-  ceiling resolves from `VR_PROFILE` (falling back to `APP_REGION`); a
-  token-level `region_policy` can only tighten below it, never escalate. Under
-  CN the relay is limited to `chat`/`embedding`, upstream channels are limited
-  to the CN region and region-agnostic (`any`) channels, inbound content safety
-  is enabled (fail-closed keyword checker, extensible via the
-  `ai_relay_content_check` filter), and usage logs
-  are retained 180 days instead of 30. Compliance rejections answer
-  `403 model_not_allowed` / `400 content_policy_violation` **before** quota
-  freeze, so a blocked request never freezes balance and leaves no usage log.
-  New admin export `GET /admin/compliance/export` bundles registration/audit
-  material with no secrets and no wordlist. Per-token quota becomes a rolling
-  window aligned with the retention period.
-- **1.4.1** — defects reported by a third-party test run against a live
-  install: non-retryable upstream 4xx now answer with the real status code
-  and the upstream `error.type`/`error.message` instead of collapsing into
-  `502 upstream_error`; key health/cooldown and channel fuse updates use the
-  PostgreSQL scalar functions `LEAST`/`GREATEST` (`MIN`/`MAX` are aggregates
-  there) so both statements commit in one transaction; the per-token quota
-  check counts the current request's estimate, so the request that would
-  exceed the limit is rejected with 402 instead of only the next one;
-  upstream hosts that fail to resolve are rejected fail-closed.
-- **1.4.0** — per-token credit quota (migration `v1.4.0`): `relay_tokens`
-  gains `quota_credits` (`-1` = unlimited), enforced at the gateway with a
-  402 response and aggregated live from `relay_usage_logs` via the new
-  `ix_relay_usage_token` index; new user self-service API
-  (`/plugin/ai_relay/api/balance`, `/api/recharge`, `/api/tokens`) with the
-  user-center entry surfaced dynamically by plugin enablement.
-- **1.3.0** — per-1M pricing precision (migration `v1.3.0`): sub-fen market
-  rates now bill correctly (e.g. CNY 4/1M = 400 fen/1M); `/v1/models` exposes
-  a `pricing` block in fen per 1M tokens; freeze estimate, router, admin API
-  and UI all use the new columns with legacy-key fallback; legacy columns
-  retained but frozen.
-- **1.2.0** — per-channel RPM/TPM/concurrency aggregate gate
-  (`relay_channel_limits`, migration `v1.2.0`), admin endpoints and UI.
-- **1.1.0** — observability: cached-token counts and TTFT.
-- **1.0.0** — initial release: gateway, adapters, routing, billing,
-  entitlements, recharge, scheduler (19 tables).
+| This file | End user / integrator | `README.md` |
+| Technical whitepaper | Backend / platform engineers | [`docs/whitepaper.md`](docs/whitepaper.md) |
+| User guide / operation manual | Ops / finance | [`docs/user-guide.md`](docs/user-guide.md) |
+| Changelog | All | [`CHANGELOG.md`](CHANGELOG.md) |
