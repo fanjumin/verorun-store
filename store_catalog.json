@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "updated_at": "2026-11-03T00:48:46Z",
+  "updated_at": "2026-11-03T00:49:18Z",
   "plugins": [
     {
       "identifier": "analytics",
@@ -828,7 +828,8 @@
         "enterprise",
         "standard",
         "pro",
-        "minipro"
+        "minipro",
+        "tarka"
       ],
       "trial_days": 0,
       "download_url": "https://github.com/fanjumin/verorun-store/releases/download/site_builder-v2.13.4/site_builder-v2.13.4.zip",
